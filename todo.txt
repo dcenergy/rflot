@@ -1,0 +1,14 @@
+- Per group options (color) customization
+  Currently grouped data series are specified with a single call to flotSeries.
+  The arguments therein are inheritted by all series defined by the grouping.
+  Would be nice to be able to differentiate these per groupping.
+- Rename 'names' to some sort of named argument
+  Really, first of all 'names' is a bad variable names ('axesVars'?).
+- Manual color/fill scaling
+- Automatic time-series conversion
+  Having to convert to UTC*1000 is really sad - let's do this automatically upon
+  detecting a date/time object.
+- Sensible defaults
+  How about default xaxis, yaxis labels? Or maybe point instead of line as
+  default.  For bars, how about width=.9, and automatic allign center.
+- Clean up

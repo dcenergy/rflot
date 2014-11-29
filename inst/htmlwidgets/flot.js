@@ -31,20 +31,20 @@ HTMLWidgets.widget({
       }
 
       $(el).on("plotselected", function (event, ranges) {
-        //What about multiple x-axes?
-        $.each(plot.getXAxes(), function(_, axis) {
-          var opts = axis.options;
-          opts.min = ranges.xaxis.from;
-          opts.max = ranges.xaxis.to;
+        $.each(plot.getAxes(), function (name, axis) {
+          if (axis.used && typeof(ranges[name]) != 'undefined') {
+            axis.options.min = ranges[name].from;
+            axis.options.max = ranges[name].to;
+          }
         });
         plot.setupGrid();
         plot.draw();
         plot.clearSelection();
       });
 
+      //Can we move this to event 'plotunselected'
       $(el).on("dblclick", function () {
-        //What about multiple x-axes?
-        $.each(plot.getXAxes(), function(_, axis) {
+        $.each(plot.getAxes(), function(_, axis) {
           var opts = axis.options;
           opts.min = null;
           opts.max = null;
