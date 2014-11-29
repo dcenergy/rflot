@@ -1,0 +1,16 @@
+### flot for R
+
+The flot package is an R interface to the [Flot](http://www.flotcharts.org/) JavaScript charting library. It is a *thin* wrapper, giving the [R] user unfettered access to the parameters of the JS library.  It boasts the ability to display point, line, and bar charts and features:
+
+- Configurable interactive features including ...
+- Configurable axes and legends ...
+- Ability to zoom in/out ...
+- Ability to display grouped data ...
+- Ability to easily produce plots in RStudio, RMarkdown or Shiny ...
+
+
+#### Credits
+
+- Much of the credit goes to the community developing the [Flot JS charting library](https://github.com/flot/flot).
+- The ease with which I ported the flot JS library to [R] would not possible without the [htmlwidghets](https://github.com/ramnathv/htmlwidgets) package developed by Ramnath Vaidyanathan, in addition to members of the [RStudio](http://rstudio.com) team.
+- This library is inspired by the [dygraphs](http://github.com/rstudio/dygraphs) package for plotting time-series under development by JJ Alaire.  In many ways I have structured the syntax in this package in a similar fashion, and I have borrowed some of the plumbing verbatim from there (see for example, R/utils.R:mergeLists)

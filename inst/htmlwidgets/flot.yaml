@@ -1,0 +1,33 @@
+dependencies:
+  - name: jquery
+    version: 2.1.1
+    src: "htmlwidgets/lib/jquery/dist"
+    script: jquery-2.1.1.min.js
+  - name: flot
+    version: 1.0.1
+    src: "htmlwidgets/lib/flot"
+    script: jquery.flot.js
+  - name: flot_time
+    version: 1.0.1
+    src: "htmlwidgets/lib/flot"
+    script: jquery.flot.time.js
+  - name: flot_selection
+    version: 1.0.1
+    src: "htmlwidgets/lib/flot"
+    script: jquery.flot.selection.js
+  - name: flot_categories
+    version: 1.0.1
+    src: "htmlwidgets/lib/flot"
+    script: jquery.flot.categories.js
+  - name: flot_tooltip
+    version: 1.0.1
+    src: "htmlwidgets/lib/flot"
+    script: jquery.flot.tooltip.js
+  - name: flot_resize
+    version: 1.0.1
+    src: "htmlwidgets/lib/flot"
+    script: jquery.flot.resize.js
+  - name: flot_axis_labels
+    version: 1.0.1
+    src: "htmlwidgets/lib/flot"
+    script: jquery.flot.axislabels.js
