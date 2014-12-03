@@ -18,7 +18,18 @@ flotChart <- function(data, width = NULL, height = NULL) {
   
   x <- list()
   x$series <- list()
-  x$options <- list(grid=list(clickable=T, hoverable=T))
+  #Some default global options
+  #Interactivity enabled globally, including tooltips
+  #Do not show legend by default
+  #Points rather than lines/bars
+  x$options <- list(grid=list(clickable=T, hoverable=T)
+                    ,legend=list(show=F)
+                    ,xaxis = list(position='bottom')
+                    ,yaxis = list(position='left')
+                    ,tooltip=T)
+  if(!is.data.table(data)) {
+    stop("flotChart: An object of class data.table is expected for the data parameter")
+  }
   attr(x, "data") <- data
 #  # create widget
   htmlwidgets::createWidget(

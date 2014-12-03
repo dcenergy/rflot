@@ -9,7 +9,7 @@ Description: [R] wrapper for flot JS plotting library
 License: GPL-3
 Depends:
     R (>= 3.0),
-    data.table
+    data.table (>= 1.9.2)
 Imports:
     magrittr,
     htmlwidgets (>= 0.2.4),

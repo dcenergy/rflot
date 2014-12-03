@@ -9,10 +9,14 @@
 #'   
 #' @param flotChart An object instantiated using \code{\link{flotChart}})
 #'  to add a series definition to.
-#' @param names Character vector containing variable names to be used as part of
-#'  data-set for this series.  The first two variables will be used as x, and y coordinates.
-#'  Other, auxiliary variables can be used in tool-tip callbacks, for example.
-#' @param group String containing a variable name to be used to transform the data-set
+#' @param x expression Evaluated in the context of the underlying data.table,
+#'  used to obtain values for the x-coordinate in the series
+#' @param y expression Evaluated in the context of the underlying data.table,
+#' used to obtain values for the y-coordinate in the series
+#'  @param extra.cols expression Possibly a vector of expressions evaluated in the context of the underlying data.table,
+#'  used to obtain values included in the data-series outside of the x- or
+#'  y-coordinate (optional)
+#' @param group expression Evaluated in the context of hte underlying data.table, used to transform the data-set
 #'  from a long, to a wide data.table. (optional)
 #' @param data data.table containing an alternative source for the data in this series. (optional)
 #' @param label Label to display for series (uses names[2] if not supplied). (optional)
@@ -37,7 +41,9 @@
 #'   
 #' @export
 flotSeries <- function(flotChart,
-                     names = NULL,
+                     x = NULL,
+                     y = NULL,
+                     extra.cols = NULL,
                      group = NULL,
                      data = NULL,
                      color = NULL, 
@@ -57,22 +63,27 @@ flotSeries <- function(flotChart,
   data<-if(is.null(data)) {
     attr(flotChart$x, "data")
   } else {
-    #TO DO: validation
+    if(!is.data.table(data)) {
+      stop("flotSeries: data parameter must be NULL (default) or of class data.table")
+    }
     data
   }
-  labels <- names(data)
-  # get the cols where this series is located and verify that they are
-  # available within the underlying dataset
-  cols <- which(labels %in% names)
-  if (length(cols) != length(names)) {
-    stop("One or more of the specified series were not found. ",
-         "Valid series names are: ", paste(labels[-1], collapse = ", "))
+  lst.eval.vars<-as.list(match.call()[-1])[c('x','y', 'extra.cols', 'group')]
+  #In the event that the user has not defined extra.cols or group
+  lst.eval.vars<-lst.eval.vars[!is.na(names(lst.eval.vars))]
+  if(!all(c('x','y') %in% names(lst.eval.vars))) {
+    stop("flotSeries: Must specify expressions for both x, and y parameters")
   }
-  
+  #TODO: Validate these expressions make sense in the context of `data`
   # create series object
-  if(is.null(group)) {
+  if(!c('group') %in% names(lst.eval.vars)) {
+    #User did not specify a grouping
     series <- list()
-    series$data <- unname(as.matrix(data[,names, with=F]))
+    tryCatch({
+      series$data <- unname(sapply(lst.eval.vars[names(lst.eval.vars) %in% c('x','y', 'extra.cols')], function(x) data[,eval(x)]))
+    }, error = function(e) {
+      paste0(stop("flotSeries: Failed in evaluating x and/or y in the context of the underlying data.table.  Error: ", e$message))
+    })
     series$color <- color
     series$label <- label
     series$lines <- lines
@@ -86,17 +97,26 @@ flotSeries <- function(flotChart,
     series$highlightColor <- highlightColor
     # default the label if we need to
     if (is.null(series$label))
-      series$label <- rev(names)[1]
+      series$label <- deparse(lst.eval.vars$y)
     #for consistent series object handling across the not/grouped cases
     series<-list(series)
+
   } else {
-    series<-sapply(unique(data[[group]]), function(str.group) {
+
+    #enable legend globally
+    flotChart$x$options$legend$show <- T
+    #Define the series objects, one per group
+    series<-sapply(unique(data[,eval(lst.eval.vars$group)]), function(this.group) {
       series.group <- list()
-      #series.group$data <- unname(as.matrix(data[eval(as.name(group))==str.group,][,names,with=F]))
-      series.group$data <- unname(as.matrix(subset(data,eval(as.name(group))==str.group)[,names]))
+      tryCatch({
+        series.group$data <- unname(sapply(lst.eval.vars[names(lst.eval.vars) %in% c('x','y', 'extra.cols')], function(x) data[eval(lst.eval.vars$group)==this.group,eval(x)]))
+      }, error = function(e) {
+        paste0(stop("flotSeries: Failed in evaluating x/y/extra.cols in the context of the underlying data.table.  Error: ", e$message))
+      })
+      #series.group$data <- unname(as.matrix(subset(data,eval(as.name(group))==str.group)[,names]))
       #To/Do: Per/Group Options?
       series.group$color <- color
-      series.group$label <- str.group
+      series.group$label <- this.group
       series.group$lines <- lines
       series.group$bars <- bars
       series.group$points <- points
@@ -109,6 +129,17 @@ flotSeries <- function(flotChart,
       series.group
     }, USE.NAMES=F, simplify=F)
   }
+
+  #If we haven't named the axes by now, let's use the variable names for this
+  #series
+  if(is.null(flotChart$x$options$xaxis$axisLabel)) {
+    flotChart$x$options$xaxis$axisLabel <- deparse(lst.eval.vars$x)
+  }
+
+  if(is.null(flotChart$x$options$yaxis$axisLabel)) {
+    flotChart$x$options$yaxis$axisLabel <- deparse(lst.eval.vars$y)
+  }
+
   flotChart$x$series <- c(flotChart$x$series, series)
   
   # return modified flotChart
