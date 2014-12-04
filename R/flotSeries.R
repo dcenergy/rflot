@@ -80,7 +80,7 @@ flotSeries <- function(flotChart,
     #User did not specify a grouping
     series <- list()
     tryCatch({
-      series$data <- unname(sapply(lst.eval.vars[names(lst.eval.vars) %in% c('x','y', 'extra.cols')], function(x) data[,eval(x)]))
+      series$data <- unname(sapply(lst.eval.vars[names(lst.eval.vars) %in% c('x','y')], function(x) data[,eval(x)]))
     }, error = function(e) {
       paste0(stop("flotSeries: Failed in evaluating x and/or y in the context of the underlying data.table.  Error: ", e$message))
     })
@@ -95,6 +95,10 @@ flotSeries <- function(flotChart,
     series$hoverable <- hoverable
     series$shadowSize <- shadowSize
     series$highlightColor <- highlightColor
+    if(c('extra.cols') %in% names(lst.eval.vars)) {
+      series$extra_data <- as.matrix(data[,eval(lst.eval.vars$extra.cols)])
+      paste0(stop("flotSeries: Failed in evaluating extra.cols in the context of the underlying data.table.  Error: ", e$message))
+    }
     # default the label if we need to
     if (is.null(series$label))
       series$label <- deparse(lst.eval.vars$y)
@@ -109,9 +113,9 @@ flotSeries <- function(flotChart,
     series<-sapply(unique(data[,eval(lst.eval.vars$group)]), function(this.group) {
       series.group <- list()
       tryCatch({
-        series.group$data <- unname(sapply(lst.eval.vars[names(lst.eval.vars) %in% c('x','y', 'extra.cols')], function(x) data[eval(lst.eval.vars$group)==this.group,eval(x)]))
+        series.group$data <- unname(sapply(lst.eval.vars[names(lst.eval.vars) %in% c('x','y')], function(x) data[eval(lst.eval.vars$group)==this.group,eval(x)]))
       }, error = function(e) {
-        paste0(stop("flotSeries: Failed in evaluating x/y/extra.cols in the context of the underlying data.table.  Error: ", e$message))
+        paste0(stop("flotSeries: Failed in evaluating x/y in the context of the underlying data.table.  Error: ", e$message))
       })
       #series.group$data <- unname(as.matrix(subset(data,eval(as.name(group))==str.group)[,names]))
       #To/Do: Per/Group Options?
@@ -126,6 +130,10 @@ flotSeries <- function(flotChart,
       series.group$hoverable <- hoverable
       series.group$shadowSize <- shadowSize
       series.group$highlightColor <- highlightColor
+      if(c('extra.cols') %in% names(lst.eval.vars)) {
+        series.group$extra_data <- as.matrix(data[eval(lst.eval.vars$group)==this.group,eval(lst.eval.vars$extra.cols)])
+        paste0(stop("flotSeries: Failed in evaluating extra.cols in the context of the underlying data.table.  Error: ", e$message))
+      }
       series.group
     }, USE.NAMES=F, simplify=F)
   }
