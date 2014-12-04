@@ -19,6 +19,14 @@ dependencies:
     version: 1.0.1
     src: "htmlwidgets/lib/flot"
     script: jquery.flot.categories.js
+  - name: flot_side_by_side
+    version: 1.0.1
+    src: "htmlwidgets/lib/flot"
+    script: jquery.flot.orderBars.js
+  - name: flot_stack
+    version: 1.0.1
+    src: "htmlwidgets/lib/flot"
+    script: jquery.flot.stack.js
   - name: flot_tooltip
     version: 1.0.1
     src: "htmlwidgets/lib/flot"

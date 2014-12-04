@@ -53,6 +53,7 @@ flotSeries <- function(flotChart,
                      points = NULL,
                      xaxis = NULL,
                      yaxis = NULL,
+                     stack = NULL,
                      clickable = F,
                      hoverable = F,
                      shadowSize = NULL,
@@ -68,6 +69,7 @@ flotSeries <- function(flotChart,
     }
     data
   }
+
   lst.eval.vars<-as.list(match.call()[-1])[c('x','y', 'extra.cols', 'group')]
   #In the event that the user has not defined extra.cols or group
   lst.eval.vars<-lst.eval.vars[!is.na(names(lst.eval.vars))]
@@ -91,6 +93,7 @@ flotSeries <- function(flotChart,
     series$points <- points
     series$xaxis <- xaxis
     series$yaxis <- yaxis
+    series$stack <- stack
     series$clickable <- clickable
     series$hoverable <- hoverable
     series$shadowSize <- shadowSize
@@ -120,12 +123,13 @@ flotSeries <- function(flotChart,
       #series.group$data <- unname(as.matrix(subset(data,eval(as.name(group))==str.group)[,names]))
       #To/Do: Per/Group Options?
       series.group$color <- color
-      series.group$label <- this.group
+      series.group$label <- paste0(ifelse(is.null(label), "", label), this.group)
       series.group$lines <- lines
       series.group$bars <- bars
       series.group$points <- points
       series.group$xaxis <- xaxis
       series.group$yaxis <- yaxis
+      series.group$stack <- stack
       series.group$clickable <- clickable
       series.group$hoverable <- hoverable
       series.group$shadowSize <- shadowSize
