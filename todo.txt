@@ -9,4 +9,5 @@
 - Sensible defaults
   Maybe point instead of line as
   default.  For bars, how about width=.9, and automatic allign center.
+- Minify js
 - Clean up
