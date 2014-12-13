@@ -6,36 +6,36 @@ dependencies:
   - name: flot
     version: 1.0.1
     src: "htmlwidgets/lib/flot"
-    script: jquery.flot.js
+    script: jquery.flot.min.js
   - name: flot_time
     version: 1.0.1
     src: "htmlwidgets/lib/flot"
-    script: jquery.flot.time.js
+    script: jquery.flot.time.min.js
   - name: flot_selection
     version: 1.0.1
     src: "htmlwidgets/lib/flot"
-    script: jquery.flot.selection.js
+    script: jquery.flot.selection.min.js
   - name: flot_categories
     version: 1.0.1
     src: "htmlwidgets/lib/flot"
-    script: jquery.flot.categories.js
+    script: jquery.flot.categories.min.js
   - name: flot_side_by_side
     version: 1.0.1
     src: "htmlwidgets/lib/flot"
-    script: jquery.flot.orderBars.js
+    script: jquery.flot.orderBars.min.js
   - name: flot_stack
     version: 1.0.1
     src: "htmlwidgets/lib/flot"
-    script: jquery.flot.stack.js
+    script: jquery.flot.stack.min.js
   - name: flot_tooltip
     version: 1.0.1
     src: "htmlwidgets/lib/flot"
-    script: jquery.flot.tooltip.js
+    script: jquery.flot.tooltip.min.js
   - name: flot_resize
     version: 1.0.1
     src: "htmlwidgets/lib/flot"
-    script: jquery.flot.resize.js
+    script: jquery.flot.resize.min.js
   - name: flot_axis_labels
     version: 1.0.1
     src: "htmlwidgets/lib/flot"
-    script: jquery.flot.axislabels.js
+    script: jquery.flot.axislabels.min.js

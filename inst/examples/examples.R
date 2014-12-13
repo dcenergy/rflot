@@ -1,4 +1,4 @@
-library(flot)
+library(rflot)
 
 #Simple scatter
 data<-data.table(faithful)
@@ -19,12 +19,14 @@ flotChart(data.table(mtcars)[,list(count=.N),by=list(cyl)]) %>%
 #Fancy bars: Dodged/stacked bar chart
 #Q:Why do I have to order cyl?
 #A:From stacking plugin: The plugin assumes the data is sorted on x (or y if stacking horizontally).
-flotChart(data.table(mtcars)[,list(count=.N),by=list(cyl)]) %>%
+flotChart(data.table(mtcars)[,list(count=.N),by=list(cyl)],height=550, width=1100) %>%
   flotSeries(x=cyl, y=count
              ,label= 'Total'
+             ,hoverable=T
              ,bars=list(show=T, order = 1, barWidth= 0.3)) %>%
   flotSeries(data=data.table(mtcars)[,list(count=.N),by=list(cyl, gear)][order(cyl),], x=cyl, y=count, group=gear
             ,label= 'Count w/ Number of gears: '
+            ,hoverable = T
             ,stack='gear'
             ,bars=list(show=T,  order=2, barWidth= 0.3)) %>%
   flotOptions(yaxis=list(axisLabel='Count')
