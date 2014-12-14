@@ -6,7 +6,7 @@ Date: 2014-11-28
 Author: Oliver Gjoneski
 Maintainer: Oliver GJoneski <gjoneski@dc-energy.com>
 Description: [R] wrapper for flot JS plotting library
-License: GPL-3 + file LICENSE
+License: GPL (>= 3) + file LICENSE
 Depends:
     R (>= 3.0),
     data.table (>= 1.9.2)
