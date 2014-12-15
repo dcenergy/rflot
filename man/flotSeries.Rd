@@ -3,20 +3,27 @@
 \alias{flotSeries}
 \title{flot data series}
 \usage{
-flotSeries(flotChart, names = NULL, group = NULL, data = NULL,
-  color = NULL, label = NULL, lines = NULL, bars = NULL,
-  points = NULL, xaxis = NULL, yaxis = NULL, clickable = F,
-  hoverable = F, shadowSize = NULL, highlightColor = NULL)
+flotSeries(flotChart, x = NULL, y = NULL, extra.cols = NULL,
+  group = NULL, data = NULL, color = NULL, label = NULL, lines = NULL,
+  bars = NULL, points = NULL, xaxis = NULL, yaxis = NULL,
+  stack = NULL, clickable = F, hoverable = F, shadowSize = NULL,
+  highlightColor = NULL)
 }
 \arguments{
 \item{flotChart}{An object instantiated using \code{\link{flotChart}})
 to add a series definition to.}
 
-\item{names}{Character vector containing variable names to be used as part of
-data-set for this series.  The first two variables will be used as x, and y coordinates.
-Other, auxiliary variables can be used in tool-tip callbacks, for example.}
+\item{x}{expression Evaluated in the context of the underlying data.table,
+used to obtain values for the x-coordinate in the series}
 
-\item{group}{String containing a variable name to be used to transform the data-set
+\item{y}{expression Evaluated in the context of the underlying data.table,
+used to obtain values for the y-coordinate in the series}
+
+\item{extra.cols}{expression Possibly a vector of expressions evaluated in the context of the underlying data.table,
+used to obtain values included in the data-series outside of the x- or
+y-coordinate (optional)}
+
+\item{group}{expression Evaluated in the context of hte underlying data.table, used to transform the data-set
 from a long, to a wide data.table. (optional)}
 
 \item{data}{data.table containing an alternative source for the data in this series. (optional)}
