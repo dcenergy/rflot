@@ -1,10 +1,10 @@
 HTMLWidgets.widget({
 
-  name: "flot",
+  name: "rflot",
 
   type: "output",
 
-  initialize: function(el, width, height) { 
+  initialize: function(el, width, height) {
     return {};
   },
 
@@ -14,15 +14,15 @@ HTMLWidgets.widget({
   },
 
   renderValue: function(el, x, instance) {
-    
+
     var self = this;
-    
+
     var series = x.series;
     var options = x.options;
-    
+
     if (instance.flot) {
       // update exisigng instance
-      // Not yet implemented 
+      // Not yet implemented
     } else {  // create new instance
 
       var plot = $.plot(el,series,options);

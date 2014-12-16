@@ -33,7 +33,7 @@ flotChart <- function(data, width = NULL, height = NULL) {
   attr(x, "data") <- data
 #  # create widget
   htmlwidgets::createWidget(
-    name = "flot",
+    name = "rflot",
     x = x,
     width = width,
     height = height,
@@ -60,7 +60,7 @@ flotChart <- function(data, width = NULL, height = NULL) {
 #'
 #' @export
 flotOutput <- function(outputId, width = "100%", height = "400px") {
-  htmlwidgets::shinyWidgetOutput(outputId, "flot", width, height)
+  htmlwidgets::shinyWidgetOutput(outputId, "rflot", width, height)
 }
 
 #' @rdname flot-shiny
