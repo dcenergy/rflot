@@ -125,7 +125,7 @@ flotSeries <- function(flotChart,
       })
       #series.group$data <- unname(as.matrix(subset(data,eval(as.name(group))==str.group)[,names]))
       #To/Do: Per/Group Options?
-      series.group$color <- color
+      series.group$color <- if(is.factor(data[,eval(lst.eval.vars$group)])) {as.numeric(unique(data[eval(lst.eval.vars$group)==this.group, eval(lst.eval.vars$group)]))-1} else {color}
       series.group$label <- paste0(ifelse(is.null(label), "", label), this.group)
       series.group$lines <- lines
       series.group$bars <- bars
