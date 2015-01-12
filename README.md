@@ -1,12 +1,13 @@
 ### rflot: Flot (JS) charts in [R]
 
-The rflot package is an R interface to the [Flot](http://www.flotcharts.org/) JavaScript charting library. It is a *thin* wrapper, giving the [R] user unfettered access to the parameters of the JS library.  It boasts the ability to display point, line, and bar charts and features:
+The [rflot](http://dcenergy.github.io/rflot/) package is an R interface to the [Flot](http://www.flotcharts.org/) JavaScript charting library. It is a *thin* wrapper, giving the [R] user unfettered access to the parameters of the JS library.  It boasts the ability to display point, line, and bar charts and features:
 
-- Configurable interactive features including ...
-- Configurable axes and legends ...
-- Ability to zoom in/out ...
-- Ability to display grouped data ...
-- Ability to easily produce plots in RStudio, RMarkdown or Shiny ...
+- Configurable interactive features including tooltips, click handlers, as well as the ability to zoom-in on the same canvas
+- Configurable axes and legends, including the ability to display data tied to multiple axes
+- Ability to display grouped data
+- Ability to easily produce plots in RStudio, RMarkdown or Shiny
+
+For more details and usage examples please visit the package [homepage](http://dcenergy.github.io/rflot/).
 
 #### Installation
 
@@ -16,10 +17,6 @@ CRAN.  You can install rflot using the devtools package:
 ```S
 devtools::install_github(c("dcenergy/rflot"))
 ```
-#### Usage
-
-See `inst/examples.R` for some simple usage examples.
-
 
 #### Credits
 
