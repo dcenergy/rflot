@@ -102,8 +102,8 @@ Plotting with Flot in [R]
 <p>Let us begin with a simple chart of gas versus temperature. The function <code>flotChart</code> is used to specify the main data-source for the chart, as well as mannually adjust the height and width of the plot. It needs to be paired with the <code>flotSeries</code> function, which adds a layer/series to the chart.</p>
 <pre class="r"><code>flotChart(data.table(airquality)) %&gt;%
   flotSeries(x=Temp,y=Ozone, label= '', points=list(show=T))</code></pre>
-<p><div id="htmlwidget-5644" style="width:672px;height:480px;" class="rflot"></div>
-<script type="application/json" data-for="htmlwidget-5644">{ "x": {
+<p><div id="htmlwidget-1406" style="width:672px;height:480px;" class="rflot"></div>
+<script type="application/json" data-for="htmlwidget-1406">{ "x": {
  "series": [
  {
  "data": [ [ 67, 41 ],
@@ -292,8 +292,8 @@ Plotting with Flot in [R]
 <p>Next, let us make use of the <code>Month</code> column to group the data. The data is automatically colored by the group variable.</p>
 <pre class="r"><code>flotChart(data.table(airquality)) %&gt;%
   flotSeries(x=Temp, y=Ozone, group = Month, label=&quot;Month: &quot;, points=list(show=T))</code></pre>
-<p><div id="htmlwidget-4627" style="width:672px;height:480px;" class="rflot"></div>
-<script type="application/json" data-for="htmlwidget-4627">{ "x": {
+<p><div id="htmlwidget-5724" style="width:672px;height:480px;" class="rflot"></div>
+<script type="application/json" data-for="htmlwidget-5724">{ "x": {
  "series": [
  {
  "data": [ [ 67, 41 ],
@@ -517,8 +517,8 @@ Plotting with Flot in [R]
   flotSeries(x=seq(min(Temp), max(Temp), .1)
              ,y=predict(lm(Ozone ~ Temp + I(Temp^2) + I(Temp^3)), newdata = data.table(Temp=seq(min(Temp), max(Temp), .1)))
              ,label=&quot;&quot;)</code></pre>
-<p><div id="htmlwidget-7171" style="width:672px;height:480px;" class="rflot"></div>
-<script type="application/json" data-for="htmlwidget-7171">{ "x": {
+<p><div id="htmlwidget-1884" style="width:672px;height:480px;" class="rflot"></div>
+<script type="application/json" data-for="htmlwidget-1884">{ "x": {
  "series": [
  {
  "data": [ [ 67, 41 ],
@@ -1181,8 +1181,8 @@ Plotting with Flot in [R]
                   }
                 &quot;)
               )</code></pre>
-<p><div id="htmlwidget-8537" style="width:672px;height:480px;" class="rflot"></div>
-<script type="application/json" data-for="htmlwidget-8537">{ "x": {
+<p><div id="htmlwidget-1073" style="width:672px;height:480px;" class="rflot"></div>
+<script type="application/json" data-for="htmlwidget-1073">{ "x": {
  "series": [
  {
  "data": [ [ 67, 41 ],
@@ -2600,8 +2600,8 @@ Plotting with Flot in [R]
                 ,mode=&quot;categories&quot;
                 ,tickLength= 0
               ))</code></pre>
-<p><div id="htmlwidget-7508" style="width:672px;height:480px;" class="rflot"></div>
-<script type="application/json" data-for="htmlwidget-7508">{ "x": {
+<p><div id="htmlwidget-573" style="width:672px;height:480px;" class="rflot"></div>
+<script type="application/json" data-for="htmlwidget-573">{ "x": {
  "series": [
  {
  "data": [ [      6,      7 ],
@@ -2657,8 +2657,8 @@ Plotting with Flot in [R]
               ,legend=list(position=&quot;nw&quot;
                           ,backgroundColor='grey'
                           ,backgroundOpacity=.1))</code></pre>
-<p><div id="htmlwidget-7705" style="width:672px;height:480px;" class="rflot"></div>
-<script type="application/json" data-for="htmlwidget-7705">{ "x": {
+<p><div id="htmlwidget-7561" style="width:672px;height:480px;" class="rflot"></div>
+<script type="application/json" data-for="htmlwidget-7561">{ "x": {
  "series": [
  {
  "data": [ [      6,      7 ],
@@ -2743,7 +2743,7 @@ Plotting with Flot in [R]
 <div id="time-series-and-multiple-axes" class="section level4">
 <h4>Time Series and Multiple Axes</h4>
 <p>Finally let us examine how you would go about charting a dual-axis time series. All dates must be passed in UTC * 1000 (milliseconds) format. We customize the axis labels, tick color and font color. In the chart below we consider the daily evolution of MSFT and AAPL stock prices starting in 2010.</p>
-<pre class="r"><code>flotChart(data.table(read.csv(&quot;~/Downloads/msft_aapl_stock_data.csv&quot;))) %&gt;%
+<pre class="r"><code>flotChart(data.table(read.csv(&quot;msft_aapl_stock_data.csv&quot;))) %&gt;%
   flotSeries(x=as.numeric(as.POSIXct(date))*1000, y=msft, hoverable=T) %&gt;%
   flotSeries(x=as.numeric(as.POSIXct(date))*1000, y=aapl, yaxis=2, color='red') %&gt;%
   flotOptions(xaxis=list(axisLabel = 'Date', mode='time')
@@ -2751,8 +2751,8 @@ Plotting with Flot in [R]
                 list(axisLabel='MSFT')
                 ,list(axisLabel='AAPL', position= &quot;right&quot;, color='red',tickColor='red', font=list(color='red')))
               ,selection=list(mode=&quot;x&quot;))</code></pre>
-<p><div id="htmlwidget-150" style="width:672px;height:480px;" class="rflot"></div>
-<script type="application/json" data-for="htmlwidget-150">{ "x": {
+<p><div id="htmlwidget-5904" style="width:672px;height:480px;" class="rflot"></div>
+<script type="application/json" data-for="htmlwidget-5904">{ "x": {
  "series": [
  {
  "data": [ [ 1.2626e+12,  30.95 ],

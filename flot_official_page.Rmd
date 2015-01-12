@@ -1,0 +1,161 @@
+---
+title: "<center> <h2>Plotting with Flot in [R]</h2> </center>"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 5
+---
+```{r, echo=FALSE}
+library(rflot)
+assignInNamespace("cedta.override", c(data.table:::cedta.override,"rmarkdown"), "data.table")
+```
+###Introduction
+The `rflot` package is an R interface to the [Flot](http://www.flotcharts.org/) JavaScript charting library. It is a *thin* wrapper, giving the [R] user unfettered access to the parameters of the JS library.  It boasts the ability to display point, line, and bar charts and features:
+
+- Configurable interactive features including tooltips, click handlers, as well as the ability to zoom-in on the same canvas
+- Configurable axes and legends, including the ability to display data tied to multiple axes
+- Ability to display grouped data
+- Ability to easily produce plots in RStudio, RMarkdown or Shiny
+
+### Using rflot
+Note, rflot is designed to work exclusively with objects of type `data.table`.
+
+#### Basic
+Let us begin with a simple chart of gas versus temperature.  The function `flotChart` is used to specify the main data-source for the chart, as well as mannually adjust the height and width of the plot.  It needs to be paired with the `flotSeries` function, which adds a layer/series to the chart.
+```{r}
+flotChart(data.table(airquality)) %>%
+  flotSeries(x=Temp,y=Ozone, label= '', points=list(show=T))
+```
+
+#### Grouped Data
+Next, let us make use of the `Month` column to group the data.  The data is automatically colored by the group variable.
+```{r}
+flotChart(data.table(airquality)) %>%
+  flotSeries(x=Temp, y=Ozone, group = Month, label="Month: ", points=list(show=T))
+```
+
+#### Multiple layers
+We can add additional series to the chart by chaining additional calls to `flotSeries`.
+```{r}
+flotChart(data.table(airquality)) %>%
+  flotSeries(x=Temp, y=Ozone, group = Month, label="Month: ", points=list(show=T)) %>%
+  flotSeries(x=seq(min(Temp), max(Temp), .1)
+             ,y=predict(lm(Ozone ~ Temp + I(Temp^2) + I(Temp^3)), newdata = data.table(Temp=seq(min(Temp), max(Temp), .1)))
+             ,label="")
+```
+       
+
+#### Interactive Charts
+Let us leverage the interactive features of flot to display custom tooltips.  We use the `flotOptions` function to make this happen.  Note, as you hover, we display tooltips that contain information beyond just the x,y coordinate (in particular, they also show the date), and change background according to the series color.  We also add the ability to drag-and-zoom (double-click to reset).
+```{r}
+flotChart(data.table(airquality)) %>%
+  flotSeries(x=Temp, y=Ozone, group = Month, label="Month: ", extra.cols=list(Wind, Solar.R, Day), points=list(show=T), clickable=T, hoverable=T) %>%
+  flotSeries(x=seq(min(Temp), max(Temp), .1)
+             ,y=predict(lm(Ozone ~ Temp + I(Temp^2) + I(Temp^3)), newdata = data.table(Temp=seq(min(Temp), max(Temp), .1)))
+             ,label="") %>%
+  flotOptions(selection=list(mode="xy")        #Enable zoom along both the the x- and y-axes
+              ,tooltipOpts = list(             #Customize tool-tip options
+                id = "customTip"
+                ,content = htmlwidgets::JS("
+                  function(label, xval, yval, flotItem) {
+                    return 'Day: ' + flotItem.series.extra_data[flotItem.dataIndex]['Day'] + 
+                            '<br>Solar.R: ' + flotItem.series.extra_data[flotItem.dataIndex]['Solar.R'] +
+                            '<br>Wind: ' + flotItem.series.extra_data[flotItem.dataIndex]['Wind'];
+                  }
+                ")
+                ,onHover = htmlwidgets::JS("
+                  function(flotItem, el){
+                    el.css('background-color', flotItem.series.color);
+                  }")
+                )
+              ,onClick = htmlwidgets::JS("
+                  function(event,pos,item) {
+                    if(item) {
+                      alert('You clicked on something');
+                    }
+                  }
+                ")
+              )
+```
+
+####Bar charts
+In addition to point, and line charts, we can easily use this package to put together a bar chart.  In the example below, we mark the x-axis data as cathegorical(can also be continuous)
+
+```{r}
+flotChart(data.table(mtcars)[,list(count=.N),by=list(cyl)]) %>%
+  flotSeries(x=cyl, y=count
+             ,label= ''
+             ,bars=list(show=T, barWidth= 0.6,align="center")) %>%
+  flotOptions(yaxis=list(axisLabel='Count')
+              ,xaxis=list(axisLabel="Number of Cylinders"
+                ,mode="categories"
+                ,tickLength= 0
+              ))
+```
+
+As a more involved example, below we show how you can use this package to produce a dodged-stacked chart.  Note, when stacking data using flot, the data must be sorted by the stacking variable.
+
+```{r}
+flotChart(data.table(mtcars)[,list(count=.N),by=list(cyl)]) %>%
+  flotSeries(x=cyl, y=count
+             ,label= 'Total'
+             ,hoverable = T
+             ,bars=list(show=T, order = 1, barWidth= 0.3)) %>%
+  flotSeries(data=data.table(mtcars)[,list(count=.N),by=list(cyl, gear)][order(cyl),], x=cyl, y=count, group=gear
+            ,label= 'Count w/ Number of gears: '
+            ,hoverable = T
+            ,stack='gear'
+            ,bars=list(show=T,  order=2, barWidth= 0.3)) %>%
+  flotOptions(yaxis=list(axisLabel='Count')
+              ,xaxis=list(axisLabel="Number of Cylinders"
+                          ,mode="categories"
+                          ,tickLength= 0
+              )
+              ,legend=list(position="nw"
+                          ,backgroundColor='grey'
+                          ,backgroundOpacity=.1))
+```
+
+#### Time Series and Multiple Axes
+Finally let us examine how you would go about charting a dual-axis time series.  All dates must be passed in UTC * 1000 (milliseconds) format.  We customize the axis labels, tick color and font color.  In the chart below we consider the daily evolution of MSFT and AAPL stock prices starting in 2010.
+
+```{r}
+flotChart(data.table(read.csv("msft_aapl_stock_data.csv"))) %>%
+  flotSeries(x=as.numeric(as.POSIXct(date))*1000, y=msft, hoverable=T) %>%
+  flotSeries(x=as.numeric(as.POSIXct(date))*1000, y=aapl, yaxis=2, color='red') %>%
+  flotOptions(xaxis=list(axisLabel = 'Date', mode='time')
+              ,yaxes=list(
+                list(axisLabel='MSFT')
+                ,list(axisLabel='AAPL', position= "right", color='red',tickColor='red', font=list(color='red')))
+              ,selection=list(mode="x"))
+```
+
+#### Using with Shiny
+This package exposes shiny output bindings that follow the standard shiny usage pattern.  In particular to display the very first chart we examined via a shiny application, we pair the `flotOutput` function used in `ui.R`, with the `renderFlot` function in `server.R`.
+```{r, echo = T, eval=FALSE}
+library(shiny)
+shinyApp(
+  ui = fluidPage(responsive = FALSE
+    ,fluidRow(style = "padding-bottom: 20px;"
+      ,column(12,
+        flotOutput("flotGraph1")
+      )
+    )
+  )
+  ,server = function(input, output, session) {
+    output$flotGraph1 <- renderFlot({
+      flotChart(data.table(airquality)) %>%
+        flotSeries(x=Temp,y=Ozone, label= '', points=list(show=T))
+    })
+  },
+  options = list(height = 500)
+)
+```
+
+###The JS API
+Given that we have tried to keep the [R] code churn at a minimum, you may find yourself needing to inject snippets of JavaScript to achieve granular control over the various parameters of the Flot JS library (see examples above).  Here are some useful references on underlying the options:
+
+- [Flot API](https://github.com/flot/flot/blob/master/API.md)
+- [Flot Tooltips](https://github.com/krzysu/flot.tooltip)
+- [Flot Axis Labels](https://github.com/markrcote/flot-axislabels)
+
