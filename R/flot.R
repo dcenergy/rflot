@@ -42,7 +42,7 @@ flotChart <- function(data, width = NULL, height = NULL) {
 }
 
 
-#' Shiny bindings for floth
+#' Shiny bindings for flot
 #' 
 #' Output and render functions for using flot within Shiny 
 #' applications and interactive Rmd documents.
