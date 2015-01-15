@@ -25,7 +25,7 @@ The `rflot` package is an R interface to the [Flot](http://www.flotcharts.org/) 
 Note, rflot is designed to work exclusively with objects of type `data.table`.
 
 #### Basic
-Let us begin with a simple chart of gas versus temperature.  The function `flotChart` is used to specify the main data-source for the chart, as well as mannually adjust the height and width of the plot.  It needs to be paired with the `flotSeries` function, which adds a layer/series to the chart.
+Let us begin with a simple chart of ozone (in parts per billion) versus temperature.  The function `flotChart` is used to specify the main data-source for the chart, as well as mannually adjust the height and width of the plot.  It needs to be paired with the `flotSeries` function, which adds a layer/series to the chart.
 ```{r}
 flotChart(data.table(airquality)) %>%
   flotSeries(x=Temp,y=Ozone, label= '', points=list(show=T))

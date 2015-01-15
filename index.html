@@ -98,7 +98,7 @@ Plotting with Flot in [R]
 <p>Note, rflot is designed to work exclusively with objects of type <code>data.table</code>.</p>
 <div id="basic" class="section level4">
 <h4>Basic</h4>
-<p>Let us begin with a simple chart of gas versus temperature. The function <code>flotChart</code> is used to specify the main data-source for the chart, as well as mannually adjust the height and width of the plot. It needs to be paired with the <code>flotSeries</code> function, which adds a layer/series to the chart.</p>
+<p>Let us begin with a simple chart of ozone (in parts per billion) versus temperature. The function <code>flotChart</code> is used to specify the main data-source for the chart, as well as mannually adjust the height and width of the plot. It needs to be paired with the <code>flotSeries</code> function, which adds a layer/series to the chart.</p>
 <pre class="r"><code>flotChart(data.table(airquality)) %&gt;%
   flotSeries(x=Temp,y=Ozone, label= '', points=list(show=T))</code></pre>
 <p><div id="htmlwidget-251" style="width:672px;height:480px;" class="rflot"></div>
