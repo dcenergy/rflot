@@ -11,6 +11,7 @@ library(rflot)
 )
 #This needed in some version combinations of rmarkdown + data.table
 assignInNamespace("cedta.override", c(data.table:::cedta.override,"rmarkdown"), "data.table")
+set.seed(109)
 ```
 ###Introduction
 The `rflot` package is an R interface to the [Flot](http://www.flotcharts.org/) JavaScript charting library. It is a *thin* wrapper, giving the [R] user unfettered access to the parameters of the JS library.  It boasts the ability to display point, line, and bar charts and features:
