@@ -130,7 +130,7 @@ flotChart(data.table(read.csv("msft_aapl_stock_data.csv"))) %>%
   flotOptions(xaxis=list(axisLabel = 'Date', mode='time')
               ,yaxes=list(
                 list(axisLabel='MSFT')
-                ,list(axisLabel='AAPL', position= "right", color='red',tickColor='red', font=list(color='red')))
+                ,list(axisLabel='AAPL', axisLabelUseCanvas=T, axisLabelColour='red', position= "right", color='red',tickColor='red', font=list(color='red')))
               ,selection=list(mode="x"))
 
 ```
