@@ -3,7 +3,7 @@
 #' R interface to interactive  plotting using the 
 #' \href{http://www.flotcharts.org/}{flot} JavaScript library.
 #' 
-#' @param data data.table holding values to be plotted
+#' @param data data.frame holding values to be plotted
 #' @param width Width in pixels (optional, defaults to automatic sizing)
 #' @param height Height in pixels (optional, defaults to automatic sizing)
 #'   
@@ -27,8 +27,8 @@ flotChart <- function(data, width = NULL, height = NULL) {
                     ,xaxis = list(position='bottom')
                     ,yaxis = list(position='left')
                     ,tooltip=T)
-  if(!is.data.table(data)) {
-    stop("flotChart: An object of class data.table is expected for the data parameter")
+  if(!is.data.frame(data)) {
+    stop("flotChart: An object of class data.frame is expected for the data parameter")
   }
   attr(x, "data") <- data
 #  # create widget
