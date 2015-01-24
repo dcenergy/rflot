@@ -69,8 +69,7 @@ Plotting with Flot in [R]
 
 <div id="TOC">
 <ul>
-<li><a href="#introduction">Introduction</a></li>
-<li><a href="#using-rflot">Using rflot</a><ul>
+<li><a href="#introduction">Introduction</a><ul>
 <li><a href="#basic">Basic</a></li>
 <li><a href="#grouped-data">Grouped Data</a></li>
 <li><a href="#multiple-layers">Multiple layers</a></li>
@@ -92,14 +91,10 @@ Plotting with Flot in [R]
 <li>Ability to display grouped data</li>
 <li>Ability to easily produce plots in RStudio, RMarkdown or Shiny</li>
 </ul>
-</div>
-<div id="using-rflot" class="section level3">
-<h3>Using rflot</h3>
-<p>Note, rflot is designed to work exclusively with objects of type <code>data.table</code>.</p>
 <div id="basic" class="section level4">
 <h4>Basic</h4>
 <p>Let us begin with a simple chart of ozone (in parts per billion) versus temperature. The function <code>flotChart</code> is used to specify the main data-source for the chart, as well as mannually adjust the height and width of the plot. It needs to be paired with the <code>flotSeries</code> function, which adds a layer/series to the chart.</p>
-<pre class="r"><code>flotChart(data.table(airquality)) %&gt;%
+<pre class="r"><code>flotChart(airquality) %&gt;%
   flotSeries(x=Temp,y=Ozone, label= '', points=list(show=T))</code></pre>
 <p><div id="htmlwidget-251" style="width:672px;height:480px;" class="rflot"></div>
 <script type="application/json" data-for="htmlwidget-251">{ "x": {
@@ -289,7 +284,7 @@ Plotting with Flot in [R]
 <div id="grouped-data" class="section level4">
 <h4>Grouped Data</h4>
 <p>Next, let us make use of the <code>Month</code> column to group the data. The data is automatically colored by the group variable.</p>
-<pre class="r"><code>flotChart(data.table(airquality)) %&gt;%
+<pre class="r"><code>flotChart(airquality) %&gt;%
   flotSeries(x=Temp, y=Ozone, group = Month, label=&quot;Month: &quot;, points=list(show=T))</code></pre>
 <p><div id="htmlwidget-4923" style="width:672px;height:480px;" class="rflot"></div>
 <script type="application/json" data-for="htmlwidget-4923">{ "x": {
@@ -511,10 +506,10 @@ Plotting with Flot in [R]
 <div id="multiple-layers" class="section level4">
 <h4>Multiple layers</h4>
 <p>We can add additional series to the chart by chaining additional calls to <code>flotSeries</code>.</p>
-<pre class="r"><code>flotChart(data.table(airquality)) %&gt;%
+<pre class="r"><code>flotChart(airquality) %&gt;%
   flotSeries(x=Temp, y=Ozone, group = Month, label=&quot;Month: &quot;, points=list(show=T)) %&gt;%
   flotSeries(x=seq(min(Temp), max(Temp), .1)
-             ,y=predict(lm(Ozone ~ Temp + I(Temp^2) + I(Temp^3)), newdata = data.table(Temp=seq(min(Temp), max(Temp), .1)))
+             ,y=predict(lm(Ozone ~ Temp + I(Temp^2) + I(Temp^3)), newdata = data.frame(Temp=seq(min(Temp), max(Temp), .1)))
              ,label=&quot;&quot;)</code></pre>
 <p><div id="htmlwidget-8929" style="width:672px;height:480px;" class="rflot"></div>
 <script type="application/json" data-for="htmlwidget-8929">{ "x": {
@@ -1152,19 +1147,19 @@ Plotting with Flot in [R]
 <div id="interactive-charts" class="section level4">
 <h4>Interactive Charts</h4>
 <p>Let us leverage the interactive features of flot to display custom tooltips. We use the <code>flotOptions</code> function to make this happen. Note, as you hover, we display tooltips that contain information beyond just the x,y coordinate (in particular, they also show the date), and change background according to the series color. We also add the ability to drag-and-zoom (double-click to reset).</p>
-<pre class="r"><code>flotChart(data.table(airquality)) %&gt;%
+<pre class="r"><code>flotChart(airquality) %&gt;%
   flotSeries(x=Temp, y=Ozone, group = Month, label=&quot;Month: &quot;, extra.cols=list(Wind, Solar.R, Day), points=list(show=T), clickable=T, hoverable=T) %&gt;%
   flotSeries(x=seq(min(Temp), max(Temp), .1)
-             ,y=predict(lm(Ozone ~ Temp + I(Temp^2) + I(Temp^3)), newdata = data.table(Temp=seq(min(Temp), max(Temp), .1)))
+             ,y=predict(lm(Ozone ~ Temp + I(Temp^2) + I(Temp^3)), newdata = data.frame(Temp=seq(min(Temp), max(Temp), .1)))
              ,label=&quot;&quot;) %&gt;%
   flotOptions(selection=list(mode=&quot;xy&quot;)        #Enable zoom along both the the x- and y-axes
               ,tooltipOpts = list(             #Customize tool-tip options
                 id = &quot;customTip&quot;
                 ,content = htmlwidgets::JS(&quot;
                   function(label, xval, yval, flotItem) {
-                    return 'Day: ' + flotItem.series.extra_data[flotItem.dataIndex]['Day'] + 
-                            '&lt;br&gt;Solar.R: ' + flotItem.series.extra_data[flotItem.dataIndex]['Solar.R'] +
-                            '&lt;br&gt;Wind: ' + flotItem.series.extra_data[flotItem.dataIndex]['Wind'];
+                    return 'Day: ' + flotItem.series.extra_data[flotItem.dataIndex][2] + 
+                            '&lt;br&gt;Solar.R: ' + flotItem.series.extra_data[flotItem.dataIndex][1] +
+                            '&lt;br&gt;Wind: ' + flotItem.series.extra_data[flotItem.dataIndex][0];
                   }
                 &quot;)
                 ,onHover = htmlwidgets::JS(&quot;
@@ -1221,161 +1216,37 @@ Plotting with Flot in [R]
 },
 "clickable": true,
 "hoverable": true,
-"extra_data": [ {
- "Wind":    7.4,
-"Solar.R":    190,
-"Day":      1 
-},
-{
- "Wind":      8,
-"Solar.R":    118,
-"Day":      2 
-},
-{
- "Wind":   12.6,
-"Solar.R":    149,
-"Day":      3 
-},
-{
- "Wind":   11.5,
-"Solar.R":    313,
-"Day":      4 
-},
-{
- "Wind":   14.3,
-"Solar.R": null,
-"Day":      5 
-},
-{
- "Wind":   14.9,
-"Solar.R": null,
-"Day":      6 
-},
-{
- "Wind":    8.6,
-"Solar.R":    299,
-"Day":      7 
-},
-{
- "Wind":   13.8,
-"Solar.R":     99,
-"Day":      8 
-},
-{
- "Wind":   20.1,
-"Solar.R":     19,
-"Day":      9 
-},
-{
- "Wind":    8.6,
-"Solar.R":    194,
-"Day":     10 
-},
-{
- "Wind":    6.9,
-"Solar.R": null,
-"Day":     11 
-},
-{
- "Wind":    9.7,
-"Solar.R":    256,
-"Day":     12 
-},
-{
- "Wind":    9.2,
-"Solar.R":    290,
-"Day":     13 
-},
-{
- "Wind":   10.9,
-"Solar.R":    274,
-"Day":     14 
-},
-{
- "Wind":   13.2,
-"Solar.R":     65,
-"Day":     15 
-},
-{
- "Wind":   11.5,
-"Solar.R":    334,
-"Day":     16 
-},
-{
- "Wind":     12,
-"Solar.R":    307,
-"Day":     17 
-},
-{
- "Wind":   18.4,
-"Solar.R":     78,
-"Day":     18 
-},
-{
- "Wind":   11.5,
-"Solar.R":    322,
-"Day":     19 
-},
-{
- "Wind":    9.7,
-"Solar.R":     44,
-"Day":     20 
-},
-{
- "Wind":    9.7,
-"Solar.R":      8,
-"Day":     21 
-},
-{
- "Wind":   16.6,
-"Solar.R":    320,
-"Day":     22 
-},
-{
- "Wind":    9.7,
-"Solar.R":     25,
-"Day":     23 
-},
-{
- "Wind":     12,
-"Solar.R":     92,
-"Day":     24 
-},
-{
- "Wind":   16.6,
-"Solar.R":     66,
-"Day":     25 
-},
-{
- "Wind":   14.9,
-"Solar.R":    266,
-"Day":     26 
-},
-{
- "Wind":      8,
-"Solar.R": null,
-"Day":     27 
-},
-{
- "Wind":     12,
-"Solar.R":     13,
-"Day":     28 
-},
-{
- "Wind":   14.9,
-"Solar.R":    252,
-"Day":     29 
-},
-{
- "Wind":    5.7,
-"Solar.R":    223,
-"Day":     30 
-},
-{
- "Wind":    7.4,
-"Solar.R":    279,
-"Day":     31 
-} ] 
+"extra_data": [ [    7.4,    190,      1 ],
+[      8,    118,      2 ],
+[   12.6,    149,      3 ],
+[   11.5,    313,      4 ],
+[   14.3, null,      5 ],
+[   14.9, null,      6 ],
+[    8.6,    299,      7 ],
+[   13.8,     99,      8 ],
+[   20.1,     19,      9 ],
+[    8.6,    194,     10 ],
+[    6.9, null,     11 ],
+[    9.7,    256,     12 ],
+[    9.2,    290,     13 ],
+[   10.9,    274,     14 ],
+[   13.2,     65,     15 ],
+[   11.5,    334,     16 ],
+[     12,    307,     17 ],
+[   18.4,     78,     18 ],
+[   11.5,    322,     19 ],
+[    9.7,     44,     20 ],
+[    9.7,      8,     21 ],
+[   16.6,    320,     22 ],
+[    9.7,     25,     23 ],
+[     12,     92,     24 ],
+[   16.6,     66,     25 ],
+[   14.9,    266,     26 ],
+[      8, null,     27 ],
+[     12,     13,     28 ],
+[   14.9,    252,     29 ],
+[    5.7,    223,     30 ],
+[    7.4,    279,     31 ] ] 
 },
 {
  "data": [ [ 78, null ],
@@ -1414,156 +1285,36 @@ Plotting with Flot in [R]
 },
 "clickable": true,
 "hoverable": true,
-"extra_data": [ {
- "Wind":    8.6,
-"Solar.R":    286,
-"Day":      1 
-},
-{
- "Wind":    9.7,
-"Solar.R":    287,
-"Day":      2 
-},
-{
- "Wind":   16.1,
-"Solar.R":    242,
-"Day":      3 
-},
-{
- "Wind":    9.2,
-"Solar.R":    186,
-"Day":      4 
-},
-{
- "Wind":    8.6,
-"Solar.R":    220,
-"Day":      5 
-},
-{
- "Wind":   14.3,
-"Solar.R":    264,
-"Day":      6 
-},
-{
- "Wind":    9.7,
-"Solar.R":    127,
-"Day":      7 
-},
-{
- "Wind":    6.9,
-"Solar.R":    273,
-"Day":      8 
-},
-{
- "Wind":   13.8,
-"Solar.R":    291,
-"Day":      9 
-},
-{
- "Wind":   11.5,
-"Solar.R":    323,
-"Day":     10 
-},
-{
- "Wind":   10.9,
-"Solar.R":    259,
-"Day":     11 
-},
-{
- "Wind":    9.2,
-"Solar.R":    250,
-"Day":     12 
-},
-{
- "Wind":      8,
-"Solar.R":    148,
-"Day":     13 
-},
-{
- "Wind":   13.8,
-"Solar.R":    332,
-"Day":     14 
-},
-{
- "Wind":   11.5,
-"Solar.R":    322,
-"Day":     15 
-},
-{
- "Wind":   14.9,
-"Solar.R":    191,
-"Day":     16 
-},
-{
- "Wind":   20.7,
-"Solar.R":    284,
-"Day":     17 
-},
-{
- "Wind":    9.2,
-"Solar.R":     37,
-"Day":     18 
-},
-{
- "Wind":   11.5,
-"Solar.R":    120,
-"Day":     19 
-},
-{
- "Wind":   10.3,
-"Solar.R":    137,
-"Day":     20 
-},
-{
- "Wind":    6.3,
-"Solar.R":    150,
-"Day":     21 
-},
-{
- "Wind":    1.7,
-"Solar.R":     59,
-"Day":     22 
-},
-{
- "Wind":    4.6,
-"Solar.R":     91,
-"Day":     23 
-},
-{
- "Wind":    6.3,
-"Solar.R":    250,
-"Day":     24 
-},
-{
- "Wind":      8,
-"Solar.R":    135,
-"Day":     25 
-},
-{
- "Wind":      8,
-"Solar.R":    127,
-"Day":     26 
-},
-{
- "Wind":   10.3,
-"Solar.R":     47,
-"Day":     27 
-},
-{
- "Wind":   11.5,
-"Solar.R":     98,
-"Day":     28 
-},
-{
- "Wind":   14.9,
-"Solar.R":     31,
-"Day":     29 
-},
-{
- "Wind":      8,
-"Solar.R":    138,
-"Day":     30 
-} ] 
+"extra_data": [ [    8.6,    286,      1 ],
+[    9.7,    287,      2 ],
+[   16.1,    242,      3 ],
+[    9.2,    186,      4 ],
+[    8.6,    220,      5 ],
+[   14.3,    264,      6 ],
+[    9.7,    127,      7 ],
+[    6.9,    273,      8 ],
+[   13.8,    291,      9 ],
+[   11.5,    323,     10 ],
+[   10.9,    259,     11 ],
+[    9.2,    250,     12 ],
+[      8,    148,     13 ],
+[   13.8,    332,     14 ],
+[   11.5,    322,     15 ],
+[   14.9,    191,     16 ],
+[   20.7,    284,     17 ],
+[    9.2,     37,     18 ],
+[   11.5,    120,     19 ],
+[   10.3,    137,     20 ],
+[    6.3,    150,     21 ],
+[    1.7,     59,     22 ],
+[    4.6,     91,     23 ],
+[    6.3,    250,     24 ],
+[      8,    135,     25 ],
+[      8,    127,     26 ],
+[   10.3,     47,     27 ],
+[   11.5,     98,     28 ],
+[   14.9,     31,     29 ],
+[      8,    138,     30 ] ] 
 },
 {
  "data": [ [ 84, 135 ],
@@ -1603,161 +1354,37 @@ Plotting with Flot in [R]
 },
 "clickable": true,
 "hoverable": true,
-"extra_data": [ {
- "Wind":    4.1,
-"Solar.R":    269,
-"Day":      1 
-},
-{
- "Wind":    9.2,
-"Solar.R":    248,
-"Day":      2 
-},
-{
- "Wind":    9.2,
-"Solar.R":    236,
-"Day":      3 
-},
-{
- "Wind":   10.9,
-"Solar.R":    101,
-"Day":      4 
-},
-{
- "Wind":    4.6,
-"Solar.R":    175,
-"Day":      5 
-},
-{
- "Wind":   10.9,
-"Solar.R":    314,
-"Day":      6 
-},
-{
- "Wind":    5.1,
-"Solar.R":    276,
-"Day":      7 
-},
-{
- "Wind":    6.3,
-"Solar.R":    267,
-"Day":      8 
-},
-{
- "Wind":    5.7,
-"Solar.R":    272,
-"Day":      9 
-},
-{
- "Wind":    7.4,
-"Solar.R":    175,
-"Day":     10 
-},
-{
- "Wind":    8.6,
-"Solar.R":    139,
-"Day":     11 
-},
-{
- "Wind":   14.3,
-"Solar.R":    264,
-"Day":     12 
-},
-{
- "Wind":   14.9,
-"Solar.R":    175,
-"Day":     13 
-},
-{
- "Wind":   14.9,
-"Solar.R":    291,
-"Day":     14 
-},
-{
- "Wind":   14.3,
-"Solar.R":     48,
-"Day":     15 
-},
-{
- "Wind":    6.9,
-"Solar.R":    260,
-"Day":     16 
-},
-{
- "Wind":   10.3,
-"Solar.R":    274,
-"Day":     17 
-},
-{
- "Wind":    6.3,
-"Solar.R":    285,
-"Day":     18 
-},
-{
- "Wind":    5.1,
-"Solar.R":    187,
-"Day":     19 
-},
-{
- "Wind":   11.5,
-"Solar.R":    220,
-"Day":     20 
-},
-{
- "Wind":    6.9,
-"Solar.R":      7,
-"Day":     21 
-},
-{
- "Wind":    9.7,
-"Solar.R":    258,
-"Day":     22 
-},
-{
- "Wind":   11.5,
-"Solar.R":    295,
-"Day":     23 
-},
-{
- "Wind":    8.6,
-"Solar.R":    294,
-"Day":     24 
-},
-{
- "Wind":      8,
-"Solar.R":    223,
-"Day":     25 
-},
-{
- "Wind":    8.6,
-"Solar.R":     81,
-"Day":     26 
-},
-{
- "Wind":     12,
-"Solar.R":     82,
-"Day":     27 
-},
-{
- "Wind":    7.4,
-"Solar.R":    213,
-"Day":     28 
-},
-{
- "Wind":    7.4,
-"Solar.R":    275,
-"Day":     29 
-},
-{
- "Wind":    7.4,
-"Solar.R":    253,
-"Day":     30 
-},
-{
- "Wind":    9.2,
-"Solar.R":    254,
-"Day":     31 
-} ] 
+"extra_data": [ [    4.1,    269,      1 ],
+[    9.2,    248,      2 ],
+[    9.2,    236,      3 ],
+[   10.9,    101,      4 ],
+[    4.6,    175,      5 ],
+[   10.9,    314,      6 ],
+[    5.1,    276,      7 ],
+[    6.3,    267,      8 ],
+[    5.7,    272,      9 ],
+[    7.4,    175,     10 ],
+[    8.6,    139,     11 ],
+[   14.3,    264,     12 ],
+[   14.9,    175,     13 ],
+[   14.9,    291,     14 ],
+[   14.3,     48,     15 ],
+[    6.9,    260,     16 ],
+[   10.3,    274,     17 ],
+[    6.3,    285,     18 ],
+[    5.1,    187,     19 ],
+[   11.5,    220,     20 ],
+[    6.9,      7,     21 ],
+[    9.7,    258,     22 ],
+[   11.5,    295,     23 ],
+[    8.6,    294,     24 ],
+[      8,    223,     25 ],
+[    8.6,     81,     26 ],
+[     12,     82,     27 ],
+[    7.4,    213,     28 ],
+[    7.4,    275,     29 ],
+[    7.4,    253,     30 ],
+[    9.2,    254,     31 ] ] 
 },
 {
  "data": [ [ 81, 39 ],
@@ -1797,161 +1424,37 @@ Plotting with Flot in [R]
 },
 "clickable": true,
 "hoverable": true,
-"extra_data": [ {
- "Wind":    6.9,
-"Solar.R":     83,
-"Day":      1 
-},
-{
- "Wind":   13.8,
-"Solar.R":     24,
-"Day":      2 
-},
-{
- "Wind":    7.4,
-"Solar.R":     77,
-"Day":      3 
-},
-{
- "Wind":    6.9,
-"Solar.R": null,
-"Day":      4 
-},
-{
- "Wind":    7.4,
-"Solar.R": null,
-"Day":      5 
-},
-{
- "Wind":    4.6,
-"Solar.R": null,
-"Day":      6 
-},
-{
- "Wind":      4,
-"Solar.R":    255,
-"Day":      7 
-},
-{
- "Wind":   10.3,
-"Solar.R":    229,
-"Day":      8 
-},
-{
- "Wind":      8,
-"Solar.R":    207,
-"Day":      9 
-},
-{
- "Wind":    8.6,
-"Solar.R":    222,
-"Day":     10 
-},
-{
- "Wind":   11.5,
-"Solar.R":    137,
-"Day":     11 
-},
-{
- "Wind":   11.5,
-"Solar.R":    192,
-"Day":     12 
-},
-{
- "Wind":   11.5,
-"Solar.R":    273,
-"Day":     13 
-},
-{
- "Wind":    9.7,
-"Solar.R":    157,
-"Day":     14 
-},
-{
- "Wind":   11.5,
-"Solar.R":     64,
-"Day":     15 
-},
-{
- "Wind":   10.3,
-"Solar.R":     71,
-"Day":     16 
-},
-{
- "Wind":    6.3,
-"Solar.R":     51,
-"Day":     17 
-},
-{
- "Wind":    7.4,
-"Solar.R":    115,
-"Day":     18 
-},
-{
- "Wind":   10.9,
-"Solar.R":    244,
-"Day":     19 
-},
-{
- "Wind":   10.3,
-"Solar.R":    190,
-"Day":     20 
-},
-{
- "Wind":   15.5,
-"Solar.R":    259,
-"Day":     21 
-},
-{
- "Wind":   14.3,
-"Solar.R":     36,
-"Day":     22 
-},
-{
- "Wind":   12.6,
-"Solar.R":    255,
-"Day":     23 
-},
-{
- "Wind":    9.7,
-"Solar.R":    212,
-"Day":     24 
-},
-{
- "Wind":    3.4,
-"Solar.R":    238,
-"Day":     25 
-},
-{
- "Wind":      8,
-"Solar.R":    215,
-"Day":     26 
-},
-{
- "Wind":    5.7,
-"Solar.R":    153,
-"Day":     27 
-},
-{
- "Wind":    9.7,
-"Solar.R":    203,
-"Day":     28 
-},
-{
- "Wind":    2.3,
-"Solar.R":    225,
-"Day":     29 
-},
-{
- "Wind":    6.3,
-"Solar.R":    237,
-"Day":     30 
-},
-{
- "Wind":    6.3,
-"Solar.R":    188,
-"Day":     31 
-} ] 
+"extra_data": [ [    6.9,     83,      1 ],
+[   13.8,     24,      2 ],
+[    7.4,     77,      3 ],
+[    6.9, null,      4 ],
+[    7.4, null,      5 ],
+[    4.6, null,      6 ],
+[      4,    255,      7 ],
+[   10.3,    229,      8 ],
+[      8,    207,      9 ],
+[    8.6,    222,     10 ],
+[   11.5,    137,     11 ],
+[   11.5,    192,     12 ],
+[   11.5,    273,     13 ],
+[    9.7,    157,     14 ],
+[   11.5,     64,     15 ],
+[   10.3,     71,     16 ],
+[    6.3,     51,     17 ],
+[    7.4,    115,     18 ],
+[   10.9,    244,     19 ],
+[   10.3,    190,     20 ],
+[   15.5,    259,     21 ],
+[   14.3,     36,     22 ],
+[   12.6,    255,     23 ],
+[    9.7,    212,     24 ],
+[    3.4,    238,     25 ],
+[      8,    215,     26 ],
+[    5.7,    153,     27 ],
+[    9.7,    203,     28 ],
+[    2.3,    225,     29 ],
+[    6.3,    237,     30 ],
+[    6.3,    188,     31 ] ] 
 },
 {
  "data": [ [ 91, 96 ],
@@ -1990,156 +1493,36 @@ Plotting with Flot in [R]
 },
 "clickable": true,
 "hoverable": true,
-"extra_data": [ {
- "Wind":    6.9,
-"Solar.R":    167,
-"Day":      1 
-},
-{
- "Wind":    5.1,
-"Solar.R":    197,
-"Day":      2 
-},
-{
- "Wind":    2.8,
-"Solar.R":    183,
-"Day":      3 
-},
-{
- "Wind":    4.6,
-"Solar.R":    189,
-"Day":      4 
-},
-{
- "Wind":    7.4,
-"Solar.R":     95,
-"Day":      5 
-},
-{
- "Wind":   15.5,
-"Solar.R":     92,
-"Day":      6 
-},
-{
- "Wind":   10.9,
-"Solar.R":    252,
-"Day":      7 
-},
-{
- "Wind":   10.3,
-"Solar.R":    220,
-"Day":      8 
-},
-{
- "Wind":   10.9,
-"Solar.R":    230,
-"Day":      9 
-},
-{
- "Wind":    9.7,
-"Solar.R":    259,
-"Day":     10 
-},
-{
- "Wind":   14.9,
-"Solar.R":    236,
-"Day":     11 
-},
-{
- "Wind":   15.5,
-"Solar.R":    259,
-"Day":     12 
-},
-{
- "Wind":    6.3,
-"Solar.R":    238,
-"Day":     13 
-},
-{
- "Wind":   10.9,
-"Solar.R":     24,
-"Day":     14 
-},
-{
- "Wind":   11.5,
-"Solar.R":    112,
-"Day":     15 
-},
-{
- "Wind":    6.9,
-"Solar.R":    237,
-"Day":     16 
-},
-{
- "Wind":   13.8,
-"Solar.R":    224,
-"Day":     17 
-},
-{
- "Wind":   10.3,
-"Solar.R":     27,
-"Day":     18 
-},
-{
- "Wind":   10.3,
-"Solar.R":    238,
-"Day":     19 
-},
-{
- "Wind":      8,
-"Solar.R":    201,
-"Day":     20 
-},
-{
- "Wind":   12.6,
-"Solar.R":    238,
-"Day":     21 
-},
-{
- "Wind":    9.2,
-"Solar.R":     14,
-"Day":     22 
-},
-{
- "Wind":   10.3,
-"Solar.R":    139,
-"Day":     23 
-},
-{
- "Wind":   10.3,
-"Solar.R":     49,
-"Day":     24 
-},
-{
- "Wind":   16.6,
-"Solar.R":     20,
-"Day":     25 
-},
-{
- "Wind":    6.9,
-"Solar.R":    193,
-"Day":     26 
-},
-{
- "Wind":   13.2,
-"Solar.R":    145,
-"Day":     27 
-},
-{
- "Wind":   14.3,
-"Solar.R":    191,
-"Day":     28 
-},
-{
- "Wind":      8,
-"Solar.R":    131,
-"Day":     29 
-},
-{
- "Wind":   11.5,
-"Solar.R":    223,
-"Day":     30 
-} ] 
+"extra_data": [ [    6.9,    167,      1 ],
+[    5.1,    197,      2 ],
+[    2.8,    183,      3 ],
+[    4.6,    189,      4 ],
+[    7.4,     95,      5 ],
+[   15.5,     92,      6 ],
+[   10.9,    252,      7 ],
+[   10.3,    220,      8 ],
+[   10.9,    230,      9 ],
+[    9.7,    259,     10 ],
+[   14.9,    236,     11 ],
+[   15.5,    259,     12 ],
+[    6.3,    238,     13 ],
+[   10.9,     24,     14 ],
+[   11.5,    112,     15 ],
+[    6.9,    237,     16 ],
+[   13.8,    224,     17 ],
+[   10.3,     27,     18 ],
+[   10.3,    238,     19 ],
+[      8,    201,     20 ],
+[   12.6,    238,     21 ],
+[    9.2,     14,     22 ],
+[   10.3,    139,     23 ],
+[   10.3,     49,     24 ],
+[   16.6,     20,     25 ],
+[    6.9,    193,     26 ],
+[   13.2,    145,     27 ],
+[   14.3,    191,     28 ],
+[      8,    131,     29 ],
+[   11.5,    223,     30 ] ] 
 },
 {
  "data": [ [     56, 26.074 ],
@@ -2580,7 +1963,7 @@ Plotting with Flot in [R]
 },
 "tooltipOpts": {
  "id": "customTip",
-"content": "\n                  function(label, xval, yval, flotItem) {\n                    return 'Day: ' + flotItem.series.extra_data[flotItem.dataIndex]['Day'] + \n                            '<br>Solar.R: ' + flotItem.series.extra_data[flotItem.dataIndex]['Solar.R'] +\n                            '<br>Wind: ' + flotItem.series.extra_data[flotItem.dataIndex]['Wind'];\n                  }\n                ",
+"content": "\n                  function(label, xval, yval, flotItem) {\n                    return 'Day: ' + flotItem.series.extra_data[flotItem.dataIndex][2] + \n                            '<br>Solar.R: ' + flotItem.series.extra_data[flotItem.dataIndex][1] +\n                            '<br>Wind: ' + flotItem.series.extra_data[flotItem.dataIndex][0];\n                  }\n                ",
 "onHover": "\n                  function(flotItem, el){\n                    el.css('background-color', flotItem.series.color);\n                  }" 
 },
 "onClick": "\n                  function(event,pos,item) {\n                    if(item) {\n                      alert('You clicked on something');\n                    }\n                  }\n                " 
@@ -2590,7 +1973,8 @@ Plotting with Flot in [R]
 <div id="bar-charts" class="section level4">
 <h4>Bar charts</h4>
 <p>In addition to point, and line charts, we can easily use this package to put together a bar chart. In the example below, we mark the x-axis data as cathegorical(can also be continuous)</p>
-<pre class="r"><code>flotChart(data.table(mtcars)[,list(count=.N),by=list(cyl)]) %&gt;%
+<pre class="r"><code>library(data.table)
+flotChart(data.table(mtcars)[,list(count=.N),by=list(cyl)]) %&gt;%
   flotSeries(x=cyl, y=count
              ,label= ''
              ,bars=list(show=T, barWidth= 0.6,align=&quot;center&quot;)) %&gt;%
@@ -2742,7 +2126,7 @@ Plotting with Flot in [R]
 <div id="time-series-and-multiple-axes" class="section level4">
 <h4>Time Series and Multiple Axes</h4>
 <p>Finally let us examine how you would go about charting a dual-axis time series. All dates must be passed in UTC * 1000 (milliseconds) format. We customize the axis labels, tick color and font color. In the chart below we consider the daily evolution of MSFT and AAPL stock prices starting in 2010.</p>
-<pre class="r"><code>flotChart(data.table(read.csv(&quot;msft_aapl_stock_data.csv&quot;))) %&gt;%
+<pre class="r"><code>flotChart(read.csv(&quot;msft_aapl_stock_data.csv&quot;)) %&gt;%
   flotSeries(x=as.numeric(as.POSIXct(date))*1000, y=msft, hoverable=T) %&gt;%
   flotSeries(x=as.numeric(as.POSIXct(date))*1000, y=aapl, yaxis=2, color='red') %&gt;%
   flotOptions(xaxis=list(axisLabel = 'Date', mode='time')
@@ -5348,7 +4732,7 @@ shinyApp(
   )
   ,server = function(input, output, session) {
     output$flotGraph1 &lt;- renderFlot({
-      flotChart(data.table(airquality)) %&gt;%
+      flotChart(airquality) %&gt;%
         flotSeries(x=Temp,y=Ozone, label= '', points=list(show=T))
     })
   },
