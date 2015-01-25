@@ -23,7 +23,13 @@ flotChart <- function(data, width = NULL, height = NULL) {
   #Do not show legend by default
   #Points rather than lines/bars
   x$options <- list(grid=list(clickable=T, hoverable=T)
-                    ,legend=list(show=F)
+                    ,onClick = htmlwidgets::JS("
+                      function(event,pos,flotItem) {
+                        if(flotItem && typeof(Shiny) != 'undefined') {
+                          Shiny.onInputChange($(this).closest('div.shiny-bound-output').attr('id') + '_selected', flotItem.dataIndex);
+                        }
+                      }")
+                    ,legend = list(show=F)
                     ,xaxis = list(position='bottom')
                     ,yaxis = list(position='left')
                     ,tooltip=T)
