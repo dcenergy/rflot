@@ -102,7 +102,11 @@ flotSeries <- function(flotChart,
     series$highlightColor <- highlightColor
     if(c('extra.cols') %in% names(lst.eval.vars)) {
       tryCatch({
-        series$extra_data <- as.matrix(eval(lst.eval.vars$extra.cols, envir=data))
+        series$extra_data<-{
+          extra_data <- eval(lst.eval.vars$extra.cols,envir=data)
+          if(is.list(extra_data)) do.call(cbind, extra_data)
+          else extra_data
+        }
       }, error = function(e) {
         paste0(stop("flotSeries: Failed in evaluating extra.cols in the context of the underlying data.frame.  Error: ", e$message))
       })
@@ -149,7 +153,11 @@ flotSeries <- function(flotChart,
       series.group$highlightColor <- highlightColor
       if(c('extra.cols') %in% names(lst.eval.vars)) {
         tryCatch({
-          series.group$extra_data<-do.call(cbind,eval(lst.eval.vars$extra.cols,envir=data.this.group))
+          series.group$extra_data<-{
+            extra_data <- eval(lst.eval.vars$extra.cols,envir=data.this.group)
+            if(is.list(extra_data)) do.call(cbind, extra_data)
+            else extra_data
+          }
         }, error = function(e) {
           paste0(stop("flotSeries: Failed in evaluating extra.cols in the context of the underlying data.frame.  Error: ", e$message))
         })
