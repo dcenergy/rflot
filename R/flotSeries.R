@@ -9,16 +9,16 @@
 #'   
 #' @param flotChart An object instantiated using \code{\link{flotChart}})
 #'  to add a series definition to.
-#' @param x expression Evaluated in the context of the underlying data.table,
+#' @param x expression Evaluated in the context of the underlying data.frame,
 #'  used to obtain values for the x-coordinate in the series
-#' @param y expression Evaluated in the context of the underlying data.table,
+#' @param y expression Evaluated in the context of the underlying data.frame,
 #' used to obtain values for the y-coordinate in the series
-#'  @param extra.cols expression Possibly a vector of expressions evaluated in the context of the underlying data.table,
+#'  @param extra.cols expression Possibly a vector of expressions evaluated in the context of the underlying data.frame,
 #'  used to obtain values included in the data-series outside of the x- or
 #'  y-coordinate (optional)
-#' @param group expression Evaluated in the context of hte underlying data.table, used to transform the data-set
-#'  from a long, to a wide data.table. (optional)
-#' @param data data.table containing an alternative source for the data in this series. (optional)
+#' @param group expression Evaluated in the context of hte underlying data.frame, used to transform the data-set
+#'  from a long, to a wide data.frame. (optional)
+#' @param data data.frame containing an alternative source for the data in this series. (optional)
 #' @param label Label to display for series (uses names[2] if not supplied). (optional)
 #' @param color Color for series. The color is either a CSS color specification 
 #'  (like "rgb(255, 100, 123)") or an integer that specifies which of auto-generated 
@@ -64,8 +64,8 @@ flotSeries <- function(flotChart,
   data<-if(is.null(data)) {
     attr(flotChart$x, "data")
   } else {
-    if(!is.data.table(data)) {
-      stop("flotSeries: data parameter must be NULL (default) or of class data.table")
+    if(!is.data.frame(data)) {
+      stop("flotSeries: data parameter must be NULL (default) or of class data.frame")
     }
     data
   }
@@ -82,9 +82,11 @@ flotSeries <- function(flotChart,
     #User did not specify a grouping
     series <- list()
     tryCatch({
-      series$data <- unname(do.call(cbind, lapply(lst.eval.vars[names(lst.eval.vars) %in% c('x','y')], function(x) data[,eval(x)])))
+      series$data <- unname(do.call(cbind, lapply(lst.eval.vars[names(lst.eval.vars) %in% c('x','y')], function(x) 
+        eval(x,envir=data)
+      )))
     }, error = function(e) {
-      paste0(stop("flotSeries: Failed in evaluating x and/or y in the context of the underlying data.table.  Error: ", e$message))
+      paste0(stop("flotSeries: Failed in evaluating x and/or y in the context of the underlying data.frame.  Error: ", e$message))
     })
     series$color <- color
     series$label <- label
@@ -100,9 +102,13 @@ flotSeries <- function(flotChart,
     series$highlightColor <- highlightColor
     if(c('extra.cols') %in% names(lst.eval.vars)) {
       tryCatch({
-        series$extra_data <- as.matrix(data[,eval(lst.eval.vars$extra.cols)])
+        series$extra_data<-{
+          extra_data <- eval(lst.eval.vars$extra.cols,envir=data)
+          if(is.list(extra_data)) do.call(cbind, extra_data)
+          else extra_data
+        }
       }, error = function(e) {
-        paste0(stop("flotSeries: Failed in evaluating extra.cols in the context of the underlying data.table.  Error: ", e$message))
+        paste0(stop("flotSeries: Failed in evaluating extra.cols in the context of the underlying data.frame.  Error: ", e$message))
       })
     }
     # default the label if we need to
@@ -116,16 +122,24 @@ flotSeries <- function(flotChart,
     #enable legend globally
     flotChart$x$options$legend$show <- T
     #Define the series objects, one per group
-    series<-sapply(unique(data[,eval(lst.eval.vars$group)]), function(this.group) {
+    series<-sapply(unique(eval(lst.eval.vars$group, envir=data)), function(this.group) {
+      data.this.group<-data[eval(lst.eval.vars$group,envir=data)==this.group,]
       series.group <- list()
       tryCatch({
-        series.group$data <- unname(do.call(cbind, lapply(lst.eval.vars[names(lst.eval.vars) %in% c('x','y')], function(x) data[eval(lst.eval.vars$group)==this.group,eval(x)])))
+        series.group$data <- unname(do.call(cbind,
+          lapply(lst.eval.vars[names(lst.eval.vars) %in% c('x','y')], function(x)
+            eval(x,envir=data.this.group)
+          )))
       }, error = function(e) {
-        paste0(stop("flotSeries: Failed in evaluating x/y in the context of the underlying data.table.  Error: ", e$message))
+        paste0(stop("flotSeries: Failed in evaluating x/y in the context of the underlying data.frame.  Error: ", e$message))
       })
       #series.group$data <- unname(as.matrix(subset(data,eval(as.name(group))==str.group)[,names]))
       #To/Do: Per/Group Options?
-      series.group$color <- if(is.factor(data[,eval(lst.eval.vars$group)])) {as.numeric(unique(data[eval(lst.eval.vars$group)==this.group, eval(lst.eval.vars$group)]))-1} else {color}
+      series.group$color <- if(is.factor(eval(lst.eval.vars$group, envir=data))) {
+        as.numeric(unique(eval(lst.eval.vars$group,envir=data.this.group)))-1}
+      else {
+        color
+      }
       series.group$label <- paste0(ifelse(is.null(label), "", label), this.group)
       series.group$lines <- lines
       series.group$bars <- bars
@@ -139,9 +153,13 @@ flotSeries <- function(flotChart,
       series.group$highlightColor <- highlightColor
       if(c('extra.cols') %in% names(lst.eval.vars)) {
         tryCatch({
-          series.group$extra_data <- as.matrix(data[eval(lst.eval.vars$group)==this.group,eval(lst.eval.vars$extra.cols)])
+          series.group$extra_data<-{
+            extra_data <- eval(lst.eval.vars$extra.cols,envir=data.this.group)
+            if(is.list(extra_data)) do.call(cbind, extra_data)
+            else extra_data
+          }
         }, error = function(e) {
-          paste0(stop("flotSeries: Failed in evaluating extra.cols in the context of the underlying data.table.  Error: ", e$message))
+          paste0(stop("flotSeries: Failed in evaluating extra.cols in the context of the underlying data.frame.  Error: ", e$message))
         })
       }
       series.group
