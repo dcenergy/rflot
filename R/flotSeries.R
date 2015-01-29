@@ -86,7 +86,7 @@ flotSeries <- function(flotChart,
         eval(x,envir=data)
       )))
     }, error = function(e) {
-      paste0(stop("flotSeries: Failed in evaluating x and/or y in the context of the underlying data.frame.  Error: ", e$message))
+      stop(paste0("flotSeries: Failed in evaluating x and/or y in the context of the underlying data.frame.  Error: ", e$message))
     })
     series$color <- color
     series$label <- label
@@ -108,7 +108,7 @@ flotSeries <- function(flotChart,
           else extra_data
         }
       }, error = function(e) {
-        paste0(stop("flotSeries: Failed in evaluating extra.cols in the context of the underlying data.frame.  Error: ", e$message))
+        stop(paste0("flotSeries: Failed in evaluating extra.cols in the context of the underlying data.frame.  Error: ", e$message))
       })
     }
     # default the label if we need to
