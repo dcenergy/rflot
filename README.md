@@ -11,7 +11,7 @@ For more details and usage examples please visit the package [homepage](http://d
 
 #### Installation
 
-rflot depends on the htmlwidgets and data.table packages, both available on
+rflot depends on the htmlwidgets package available on
 CRAN.  You can install rflot using the devtools package:
 
 ```S

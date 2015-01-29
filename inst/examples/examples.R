@@ -1,8 +1,7 @@
 library(rflot)
 
 #Simple scatter
-data<-data.table(faithful)
-flotChart(data.table(faithful)) %>%
+flotChart(faithful) %>%
   flotSeries(x=eruptions,y=waiting, label= '', points=list(show=T))
 
 #Simple bar chart
@@ -19,6 +18,7 @@ flotChart(data.table(mtcars)[,list(count=.N),by=list(cyl)]) %>%
 #Fancy bars: Dodged/stacked bar chart
 #Q:Why do I have to order cyl?
 #A:From stacking plugin: The plugin assumes the data is sorted on x (or y if stacking horizontally).
+library(data.table)
 flotChart(data.table(mtcars)[,list(count=.N),by=list(cyl)],height=550, width=1100) %>%
   flotSeries(x=cyl, y=count
              ,label= 'Total'
@@ -37,7 +37,7 @@ flotChart(data.table(mtcars)[,list(count=.N),by=list(cyl)],height=550, width=110
 
 #Simple line chart
 t <- seq(0, 2 * pi, length = 20)
-data <- data.table(x = sin(t), y = cos(t))
+data <- data.frame(x = sin(t), y = cos(t))
 flotChart(data, width=300, 300) %>%
   flotSeries(x=x, y=y, label= '') %>%
   flotOptions(yaxis=list(min=-1, max=1)
