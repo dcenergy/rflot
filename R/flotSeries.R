@@ -36,7 +36,7 @@
 #' @return flotChart with additional series
 #'   
 #' @note See the 
-#'   \href{http://dcenergy.com}{online
+#'   \href{http://dcenergy.github.io/rflot/}{online
 #'   documentation} for additional details and examples.
 #'   
 #' @export
