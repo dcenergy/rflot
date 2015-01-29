@@ -1,0 +1,16 @@
+rflot 0.1.4
+------------------------------------------------------------------------------
+* No more data.table dependency.  This introduces a breaking change in the way
+  the extra.cols argument is presented in JS.  In particular previously
+
+  extr.cols = list(dt, class)
+
+  would have been accessible at 
+
+  extra_data[index]['dt'], and extra_data[index]['class'].
+
+  Now, can be found at
+
+  extr_data[index][0], and extra_data[index][1].
+
+
