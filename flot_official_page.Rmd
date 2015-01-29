@@ -131,27 +131,35 @@ flotChart(read.csv("msft_aapl_stock_data.csv")) %>%
 
 ```
 
-#### Using with Shiny
-This package exposes shiny output bindings that follow the standard shiny usage pattern.  In particular to display the very first chart we examined via a shiny application, we pair the `flotOutput` function used in `ui.R`, with the `renderFlot` function in `server.R`.
-```{r, echo = T, eval=FALSE}
+#### Using with Shiny and Including Additional Plug-ins
+With `rflot` we have bundled a useful set of plug-ins that extend the functionality of Flot.  However there are many other plug-ins you may wish to include in your app.  You can do this easily by sourcing appropriate JS script.
+
+This package exposes shiny output bindings that follow the standard shiny usage pattern.  In particular to display the very first chart we examined via a shiny application, we pair the `flotOutput` function used in `ui.R`, with the `renderFlot` function in `server.R`.  Moreover we include the symbols plugin, and use the `diamond` shape for the scatter plot.
+
+```{r, echo = T, eval=F}
 library(shiny)
 shinyApp(
-  ui = fluidPage(responsive = FALSE
+  ui = fluidPage(
+    tags$head(tags$script(type = 'text/javascript', src="http://cdn.rawgit.com/flot/flot/master/jquery.flot.symbol.js"))
     ,fluidRow(style = "padding-bottom: 20px;"
       ,column(12,
-        flotOutput("flotGraph1")
+        flotOutput("flotGraph1", height=300)
       )
     )
   )
   ,server = function(input, output, session) {
     output$flotGraph1 <- renderFlot({
       flotChart(airquality) %>%
-        flotSeries(x=Temp,y=Ozone, label= '', points=list(show=T))
+        flotSeries(x=Temp,y=Ozone, label= '', points=list(show=T, symbol='diamond'))
     })
   },
-  options = list(height = 500)
+  options = list(height = 350)
 )
 ```
+
+<p align="center">
+  ![Shiny App Output](images/airquality_diamond.png)
+</p>
 
 ###The JS API
 Given that we have tried to keep the [R] code churn at a minimum, you may find yourself needing to inject snippets of JavaScript to achieve granular control over the various parameters of the Flot JS library (see examples above).  Here are some useful references on underlying the options:
