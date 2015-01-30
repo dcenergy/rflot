@@ -1,7 +1,7 @@
 Package: rflot
 Type: Package
 Title: [R] wrapper for flot JS plotting library
-Version: 0.1.4
+Version: 0.1.499
 Date: 2014-12-30
 Author: Oliver Gjoneski
 Maintainer: Oliver GJoneski <gjoneski@dc-energy.com>
