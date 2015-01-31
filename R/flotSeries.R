@@ -19,7 +19,9 @@
 #' @param group expression Evaluated in the context of hte underlying data.frame, used to transform the data-set
 #'  from a long, to a wide data.frame. (optional)
 #' @param data data.frame containing an alternative source for the data in this series. (optional)
-#' @param label Label to display for series (uses names[2] if not supplied). (optional)
+#' @param label Label to display for series (uses y-var expresion by default)).  When
+#' grouping data, displayed label is a combination of the label field and the
+#' group name.  Pass NULL to remove this series (grouped or not) from legend (optional)
 #' @param color Color for series. The color is either a CSS color specification 
 #'  (like "rgb(255, 100, 123)") or an integer that specifies which of auto-generated 
 #'  colors to select, e.g. 0 will get color no. 0, etc. (optional)
@@ -47,7 +49,7 @@ flotSeries <- function(flotChart,
                      group = NULL,
                      data = NULL,
                      color = NULL, 
-                     label = NULL,
+                     label = "",
                      lines = NULL,
                      bars = NULL,
                      points = NULL,
@@ -112,7 +114,7 @@ flotSeries <- function(flotChart,
       })
     }
     # default the label if we need to
-    if (is.null(series$label))
+    if (!is.null(series$label) && series$label=='')
       series$label <- deparse(lst.eval.vars$y)
     #for consistent series object handling across the not/grouped cases
     series<-list(series)
@@ -140,7 +142,7 @@ flotSeries <- function(flotChart,
       else {
         color
       }
-      series.group$label <- paste0(ifelse(is.null(label), "", label), this.group)
+      series.group$label <- ifelse(!is.null(label), paste0(label, this.group),"")
       series.group$lines <- lines
       series.group$bars <- bars
       series.group$points <- points

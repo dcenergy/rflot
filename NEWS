@@ -1,3 +1,10 @@
+rflot 0.1.499
+------------------------------------------------------------------------------
+* Allow users to specify that a series should not appear in the legend, by 
+  passing NULL for the label parameter.  In the case of a grouped series, this
+  will remove all groups in that series from the legend.  For more granular
+  control, use legend.labelFormatter JS callback.
+
 rflot 0.1.4
 ------------------------------------------------------------------------------
 * No more data.table dependency.  This introduces a breaking change in the way
