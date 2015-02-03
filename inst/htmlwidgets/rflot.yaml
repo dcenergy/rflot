@@ -20,7 +20,7 @@ dependencies:
     src: "htmlwidgets/lib/flot"
     script: jquery.flot.categories.min.js
   - name: flot_side_by_side
-    version: 1.0.1
+    version: 1.0.2
     src: "htmlwidgets/lib/flot"
     script: jquery.flot.orderBars.min.js
   - name: flot_stack

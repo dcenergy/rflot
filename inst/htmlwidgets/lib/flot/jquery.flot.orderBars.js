@@ -126,29 +126,22 @@
                         
                         //check if any of the series has set sameSeriesArrayIndex
                         var sameSeriesIndex;
-                        if (series[i].sameSeriesArrayIndex) {
-                            if(series[i + 1].sameSeriesArrayIndex !== undefined) {
-                                sameSeriesIndex = series[i].sameSeriesArrayIndex;
-                                series[i + 1].sameSeriesArrayIndex = sameSeriesIndex;
-                                sameSeries[sameSeriesIndex].push(series[i + 1]);                                
-                                sameSeries[sameSeriesIndex].sort(sortByWidth);
-                                
-                                series[i] = sameSeries[sameSeriesIndex][0];
-                                removeElement(series, i + 1);
-                            }
+                        if (typeof(series[i].sameSeriesArrayIndex)!='undefined') {
+                            sameSeriesIndex = series[i].sameSeriesArrayIndex;
+                            series[i + 1].sameSeriesArrayIndex = sameSeriesIndex;
+                            sameSeries[sameSeriesIndex].push(series[i + 1]);
+                            sameSeries[sameSeriesIndex].sort(sortByWidth);
+                            series[i] = sameSeries[sameSeriesIndex][0];
+                            removeElement(series, i + 1);
                         }
                         
-                        else if (series[i + 1].sameSeriesArrayIndex) {
-                            if(series[i].sameSeriesArrayIndex !== undefined) {
-                                sameSeriesIndex = series[i + 1].sameSeriesArrayIndex;
-                                series[i].sameSeriesArrayIndex = sameSeriesIndex;
-                                sameSeries[sameSeriesIndex].push(series[i]);                                
-                                sameSeries[sameSeriesIndex].sort(sortByWidth);
-                                
-                                series[i] = sameSeries[sameSeriesIndex][0];
-                                removeElement(series, i + 1);
-                                
-                            }
+                        else if (typeof(series[i + 1].sameSeriesArrayIndex) != 'undefined') {
+                            sameSeriesIndex = series[i + 1].sameSeriesArrayIndex;
+                            series[i].sameSeriesArrayIndex = sameSeriesIndex;
+                            sameSeries[sameSeriesIndex].push(series[i]);
+                            sameSeries[sameSeriesIndex].sort(sortByWidth);
+                            series[i] = sameSeries[sameSeriesIndex][0];
+                            removeElement(series, i + 1);
                         }
                         
                         else {
