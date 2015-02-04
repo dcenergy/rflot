@@ -4,36 +4,55 @@ library(rflot)
 flotChart(faithful) %>%
   flotSeries(x=eruptions,y=waiting, label= '', points=list(show=T))
 
-#Simple bar chart
-flotChart(data.table(mtcars)[,list(count=.N),by=list(cyl)]) %>%
-  flotSeries(x=cyl, y=count
-             ,label= ''
+#Simple bar chart, numerical x-axis
+flotChart(data.frame(discoveries=as.numeric(discoveries),year=as.numeric(time(discoveries))-1860)) %>%
+  flotSeries(x=year, y=discoveries, bars=list(show=T), hoverable=T) %>%
+  flotOptions(xaxis=list(axisLabel="Year starting in 1860"))
+
+#Stacked bar chart example with a categorical x-axis and custom tooltips
+#Possible tooltip plugin bug: For some reason %x does not work as it should here
+#however xval works fine
+flotChart(as.data.frame(xtabs(ncases ~ agegp+alcgp, data = esoph),stringsAsFactors = F)) %>%
+  flotSeries(x=agegp, y=Freq, group=alcgp, stack=T, hoverable=T
+             ,label= 'Alcohol Consumption: '
              ,bars=list(show=T, barWidth= 0.6,align="center")) %>%
   flotOptions(yaxis=list(axisLabel='Count')
-              ,xaxis=list(axisLabel="Number of Cylinders"
+              ,xaxis=list(axisLabel="Age Group"
                 ,mode="categories"
                 ,tickLength= 0
-              ))
+              )
+              ,tooltipOpts=list(
+                content=htmlwidgets::JS("function(label, xval, yval, flotItem) {
+                  return 'Age Group: '+xval+' <br> Count: %y <br> %s';}")))
 
-#Fancy bars: Dodged/stacked bar chart
-#Q:Why do I have to order cyl?
-#A:From stacking plugin: The plugin assumes the data is sorted on x (or y if stacking horizontally).
-library(data.table)
-flotChart(data.table(mtcars)[,list(count=.N),by=list(cyl)],height=550, width=1100) %>%
-  flotSeries(x=cyl, y=count
-             ,label= 'Total'
-             ,hoverable=T
-             ,bars=list(show=T, order = 1, barWidth= 0.3)) %>%
-  flotSeries(data=data.table(mtcars)[,list(count=.N),by=list(cyl, gear)][order(cyl),], x=cyl, y=count, group=gear
-            ,label= 'Count w/ Number of gears: '
-            ,hoverable = T
-            ,stack='gear'
-            ,bars=list(show=T,  order=2, barWidth= 0.3)) %>%
+#Fancy bars: Dodged/stacked bar chart with a categorical x-axis
+#Possible tooltip plugin bug: For some reason %x does not work as it should here
+#however xval works fine
+flotChart(as.data.frame(xtabs(ncases ~ agegp+alcgp, data = esoph),
+stringsAsFactors = F)) %>%
+  flotSeries(x=agegp, y=Freq, group=alcgp,stack=T, hoverable=T
+             ,label= 'Alcohol Consomption: '
+             ,bars=list(show=T, fill=0.1, order=1,barWidth= 0.2)) %>%
+  flotSeries(data=as.data.frame(xtabs(ncases ~ agegp+tobgp, data = esoph)
+                    ,stringsAsFactors = F)
+               ,x=agegp, y=Freq, group=tobgp, stack=T, hoverable=T
+               ,label= 'Tobaco Consumption: '
+               ,bars=list(show=T, fill=.7, order=2, barWidth= 0.2)) %>%
+  flotSeries(data=as.data.frame(xtabs(ncontrols ~ agegp, data = esoph)
+                    ,stringsAsFactors = F)
+                ,x=agegp, y=Freq, hoverable=T
+                ,label= 'Number of Controls'
+                ,bars=list(show=T, order=3, barWidth= 0.2)) %>%
   flotOptions(yaxis=list(axisLabel='Count')
-              ,xaxis=list(axisLabel="Number of Cylinders"
+              ,xaxis=list(axisLabel="Age Group"
                           ,mode="categories"
                           ,tickLength= 0
-              ))
+              )
+              ,legend=list(position='nw')
+              ,tooltipOpts=list(
+                content=htmlwidgets::JS("function(label, xval, yval, flotItem) {
+                  return 'Age Group: '+xval+' <br> Count: %y <br> %s';}"))
+              )
 
 #Simple line chart
 t <- seq(0, 2 * pi, length = 20)
