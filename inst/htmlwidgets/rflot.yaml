@@ -39,3 +39,7 @@ dependencies:
     version: 1.0.1
     src: "htmlwidgets/lib/flot"
     script: jquery.flot.axislabels.min.js
+  - name: flot_chart_title
+    version: 1.0.1
+    src: "htmlwidgets/lib/flot"
+    script: jquery.flot.title.min.js

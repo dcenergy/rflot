@@ -15,6 +15,7 @@
 #' @param tooltip logical See \href{https://github.com/krzysu/flot.tooltip}{online documentation} (optional)
 #' @param tooltipOpts list See \href{https://github.com/krzysu/flot.tooltip}{online documentation} (optional)
 #' @param selection list See \href{http://www.flotcharts.org/flot/examples/selection/}{online documentation} (optional)
+#' @param title list See \href{https://github.com/dcenergy/rflot/blob/master/inst/htmlwidgets/lib/flot/jquery.flot.title.js}{online documentation} (optional)
 #'   
 #' @return flotChart with additional series
 #'   
