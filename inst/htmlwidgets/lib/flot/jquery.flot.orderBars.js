@@ -1,4 +1,4 @@
-/*
+/*!
  * Flot plugin to order bars side by side. This is improved version of Benjamin BUFFET work
  * originally from http://en.benjaminbuffet.com/labs/flot/.
  * 
