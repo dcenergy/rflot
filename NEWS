@@ -1,9 +1,17 @@
 rflot 0.1.499
 ------------------------------------------------------------------------------
+* Users can now specify a chart title using
+    flotOptions(...,title=list(...))
+
+* Bugfix: When dodging and stacking bar charts at the same time (using stack=T
+  together with bars.order), fix instances of incorrect stacking in the case of
+  more than 3 series stacked in same (dodged) position.
+
 * Allow users to specify that a series should not appear in the legend, by 
   passing NULL for the label parameter.  In the case of a grouped series, this
   will remove all groups in that series from the legend.  For more granular
   control, use legend.labelFormatter JS callback.
+
 
 rflot 0.1.4
 ------------------------------------------------------------------------------
