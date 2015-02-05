@@ -23,6 +23,8 @@ to add a series definition to.}
 \item{tooltipOpts}{list See \href{https://github.com/krzysu/flot.tooltip}{online documentation} (optional)}
 
 \item{selection}{list See \href{http://www.flotcharts.org/flot/examples/selection/}{online documentation} (optional)}
+
+\item{title}{list See \href{https://github.com/dcenergy/rflot/blob/master/inst/htmlwidgets/lib/flot/jquery.flot.title.js}{online documentation} (optional)}
 }
 \value{
 flotChart with additional series
@@ -34,7 +36,7 @@ library as accepted without validation and converted using RJSONIO::toJSON
 }
 \note{
 See the
-  \href{http://dcenergy.com}{online
+  \href{http://dcenergy.github.io/rflot/}{online
   documentation} for additional details and examples.
 }
 

@@ -4,7 +4,7 @@
 \alias{flot-shiny}
 \alias{flotOutput}
 \alias{renderFlot}
-\title{Shiny bindings for floth}
+\title{Shiny bindings for flot}
 \usage{
 flotOutput(outputId, width = "100\%", height = "400px")
 

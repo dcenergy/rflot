@@ -5,7 +5,7 @@
 \title{flot data series}
 \usage{
 flotSeries(flotChart, x = NULL, y = NULL, extra.cols = NULL,
-  group = NULL, data = NULL, color = NULL, label = NULL, lines = NULL,
+  group = NULL, data = NULL, color = NULL, label = "", lines = NULL,
   bars = NULL, points = NULL, xaxis = NULL, yaxis = NULL,
   stack = NULL, clickable = F, hoverable = F, shadowSize = NULL,
   highlightColor = NULL)
@@ -14,26 +14,28 @@ flotSeries(flotChart, x = NULL, y = NULL, extra.cols = NULL,
 \item{flotChart}{An object instantiated using \code{\link{flotChart}})
 to add a series definition to.}
 
-\item{x}{expression Evaluated in the context of the underlying data.table,
+\item{x}{expression Evaluated in the context of the underlying data.frame,
 used to obtain values for the x-coordinate in the series}
 
-\item{y}{expression Evaluated in the context of the underlying data.table,
+\item{y}{expression Evaluated in the context of the underlying data.frame,
 used to obtain values for the y-coordinate in the series}
 
-\item{extra.cols}{expression Possibly a vector of expressions evaluated in the context of the underlying data.table,
+\item{extra.cols}{expression Possibly a vector of expressions evaluated in the context of the underlying data.frame,
 used to obtain values included in the data-series outside of the x- or
 y-coordinate (optional)}
 
-\item{group}{expression Evaluated in the context of hte underlying data.table, used to transform the data-set
-from a long, to a wide data.table. (optional)}
+\item{group}{expression Evaluated in the context of hte underlying data.frame, used to transform the data-set
+from a long, to a wide data.frame. (optional)}
 
-\item{data}{data.table containing an alternative source for the data in this series. (optional)}
+\item{data}{data.frame containing an alternative source for the data in this series. (optional)}
 
 \item{color}{Color for series. The color is either a CSS color specification
 (like "rgb(255, 100, 123)") or an integer that specifies which of auto-generated
 colors to select, e.g. 0 will get color no. 0, etc. (optional)}
 
-\item{label}{Label to display for series (uses names[2] if not supplied). (optional)}
+\item{label}{Label to display for series (uses y-var expresion by default)).  When
+grouping data, displayed label is a combination of the label field and the
+group name.  Pass NULL to remove this series (grouped or not) from legend (optional)}
 
 \item{lines}{list See \href{https://github.com/flot/flot/blob/master/API.md\#data-format}{online documentation} (optional)}
 
@@ -66,7 +68,7 @@ library as accepted without validation and converted using RJSONIO::toJSON
 }
 \note{
 See the
-  \href{http://dcenergy.com}{online
+  \href{http://dcenergy.github.io/rflot/}{online
   documentation} for additional details and examples.
 }
 

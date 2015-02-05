@@ -7,7 +7,7 @@
 flotChart(data, width = NULL, height = NULL)
 }
 \arguments{
-\item{data}{data.table holding values to be plotted}
+\item{data}{data.frame holding values to be plotted}
 
 \item{width}{Width in pixels (optional, defaults to automatic sizing)}
 
