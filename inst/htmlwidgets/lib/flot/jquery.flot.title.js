@@ -1,4 +1,4 @@
-/* Flot plugin for drawing chart title onto overlay canvas
+/*! Flot plugin for drawing chart title onto overlay canvas
 
 Copyright (c) 2015 D.C. Energy L.L.C.
 Licensed under GPL >=v3.
@@ -37,7 +37,7 @@ In [R], this translates to:
         text: "",
         font: null,
         position: "top", //Can also be "bottom"
-        inside: fals //Can also be true
+        inside: false //Can also be true
       }
     };
 
@@ -60,7 +60,7 @@ In [R], this translates to:
           weight: placeholder.css("font-weight"),
           family: placeholder.css("font-family")
         };
-        if(typeof(titleTxt) === 'string' && titleTxt != "") {
+        if(typeof(titleTxt) === 'string' && titleTxt !== "") {
           if(typeof(plotOptions.title.font) === 'object') {
             plotOptions.title.font = $.extend(true, {}, fontDefaults, plotOptions.title.font);
             if (!plotOptions.title.font.lineHeight) {
@@ -87,7 +87,7 @@ In [R], this translates to:
           titleTxt = plotOptions.title.text,
           placeholder = plot.getPlaceholder(),
           margin = {top:-5, bottom:-5};
-        if(typeof(titleTxt) === 'string' && titleTxt != "") {
+        if(typeof(titleTxt) === 'string' && titleTxt !== "") {
           ctx.font = plotOptions.title.font.style + " " + plotOptions.title.font.variant + " " + plotOptions.title.font.weight + " " + plotOptions.title.font.size + "px/" + plotOptions.title.font.lineHeight + "px " + plotOptions.title.font.family;
           ctx.textAlign = 'center';
 

@@ -43,7 +43,6 @@ HTMLWidgets.widget({
       plot.clearSelection();
     });
 
-    //Can we move this to event 'plotunselected'
     $(el).on("dblclick", function () {
       $.each(plot.getAxes(), function(_, axis) {
         var opts = axis.options;
