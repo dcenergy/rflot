@@ -35,7 +35,9 @@ In [R], this translates to:
     var options = {
       title: {
         text: "",
-        font: null
+        font: null,
+        position: "top", //Can also be "bottom"
+        inside: fals //Can also be true
       }
     };
 
@@ -65,7 +67,11 @@ In [R], this translates to:
              plotOptions.title.font.lineHeight = Math.round(plotOptions.title.font.size * 1.15);
             }
           }
-          offset.top=offset.top+plotOptions.title.font.lineHeight;
+          if(typeof(plotOptions.title.position) == 'string' && plotOptions.title.position == 'top' && plotOptions.title.inside === false) {
+            offset.top=offset.top+plotOptions.title.font.lineHeight;
+          } else if(plotOptions.title.inside === false){
+            offset.bottom=offset.bottom+plotOptions.title.font.lineHeight;
+          }
         }
       });
 
@@ -76,15 +82,25 @@ In [R], this translates to:
       */
 
       plot.hooks.drawOverlay.push(function (plot, ctx) {
-          var titleXcoord = ctx.canvas.width / 2,
-            plotOptions=plot.getOptions(),
-            titleTxt = plotOptions.title.text,
-            placeholder = plot.getPlaceholder();
-            console.dir(plotOptions);
+        var titleXcoord = ctx.canvas.width / 2,
+          plotOptions=plot.getOptions(),
+          titleTxt = plotOptions.title.text,
+          placeholder = plot.getPlaceholder(),
+          margin = {top:-5, bottom:-5};
         if(typeof(titleTxt) === 'string' && titleTxt != "") {
           ctx.font = plotOptions.title.font.style + " " + plotOptions.title.font.variant + " " + plotOptions.title.font.weight + " " + plotOptions.title.font.size + "px/" + plotOptions.title.font.lineHeight + "px " + plotOptions.title.font.family;
           ctx.textAlign = 'center';
-          ctx.fillText(titleTxt, titleXcoord, plot.getPlotOffset().top-5);
+
+          if(plotOptions.title.inside) {
+            margin = {top: plotOptions.title.font.lineHeight, bottom: -plot.getPlotOffset().bottom -5};
+          }
+
+          if(typeof(plotOptions.title.position) == 'string' && plotOptions.title.position == 'top') {
+            titleYcoord =  plot.getPlotOffset().top + margin.top;
+          } else {
+            titleYcoord =  ctx.canvas.height + margin.bottom;
+          }
+          ctx.fillText(titleTxt, titleXcoord, titleYcoord);
         }
       });
     }
