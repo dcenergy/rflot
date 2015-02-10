@@ -1,4 +1,4 @@
-rflot 0.1.499
+rflot 0.1.5
 ------------------------------------------------------------------------------
 * Users can now specify a chart title using
     flotOptions(...,title=list(...))
