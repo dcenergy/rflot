@@ -158,9 +158,14 @@
                         }
                         i--;
                         n--;
-
-                        
                         //leave the wider serie and the other one move to 
+                    } else {
+                      sameSeriesIndex = sameSeries.length;
+                      sameSeries[sameSeriesIndex] = new Array();
+                      sameSeries[sameSeriesIndex].push(series[i]);
+                      sameSeries[sameSeriesIndex].sort(sortByWidth);
+                      series[i] = sameSeries[sameSeriesIndex][0];
+                      series[i].sameSeriesArrayIndex = sameSeriesIndex;
                     }
                 }
                 n = n-1;
